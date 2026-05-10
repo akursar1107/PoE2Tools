@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PoE2 Build Randomizer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>PoE2 Build Randomizer</h1>
+    <p class="subtitle">Not sure what to play? Let fate decide.</p>
+  </header>
+
+  <main>
+    <button id="rollBtn">Roll Build</button>
+
+    <section id="result" class="result hidden" aria-live="polite">
+      <div class="result-card" id="ascendancyCard">
+        <span class="label">Ascendancy</span>
+        <span class="class-tag" id="classTag"></span>
+        <span class="value" id="ascendancyValue"></span>
+      </div>
+      <div class="result-card" id="skillCard">
+        <span class="label">Skill Gem</span>
+        <span class="value" id="skillValue"></span>
+      </div>
+    </section>
+
+    <section id="historySection" class="hidden">
+      <div class="history-header">
+        <h2>Roll History</h2>
+        <button id="clearBtn" class="clear-btn">Clear</button>
+      </div>
+      <ul id="historyList"></ul>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

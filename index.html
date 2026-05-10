@@ -3,41 +3,130 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PoE2 Build Randomizer</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>PoE2 Tools</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2e3352;
+      --accent: #c89b3c;
+      --accent-hover: #e0b84e;
+      --text: #e8e8ec;
+      --text-muted: #8b8fa8;
+      --radius: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tool-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .tool-card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .tool-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #22263a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.15rem 0.5rem;
+      color: var(--text-muted);
+      width: fit-content;
+    }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
 </head>
 <body>
 
   <header>
-    <h1>PoE2 Build Randomizer</h1>
-    <p class="subtitle">Not sure what to play? Let fate decide.</p>
+    <h1>PoE2 Tools</h1>
+    <p class="subtitle">A collection of utilities for Path of Exile 2.</p>
   </header>
 
-  <main>
-    <button id="rollBtn">Roll Build</button>
+  <div class="tools">
+    <a class="tool-card" href="picker/">
+      <span class="tag">Available</span>
+      <h2>Build Randomizer</h2>
+      <p>Can't decide what to play? Roll a random ascendancy and skill gem and just go for it.</p>
+    </a>
+    <a class="tool-card" href="relic-optimizer/">
+      <span class="tag">Coming Soon</span>
+      <h2>Relic Altar Optimizer</h2>
+      <p>Plan and optimize your Trial of the Sekhemas relic altar layout to hit your farming goals.</p>
+    </a>
+  </div>
 
-    <section id="result" class="result hidden" aria-live="polite">
-      <div class="result-card" id="ascendancyCard">
-        <span class="label">Ascendancy</span>
-        <span class="class-tag" id="classTag"></span>
-        <span class="value" id="ascendancyValue"></span>
-      </div>
-      <div class="result-card" id="skillCard">
-        <span class="label">Skill Gem</span>
-        <span class="value" id="skillValue"></span>
-      </div>
-    </section>
+  <footer>Built for Path of Exile 2 — not affiliated with Grinding Gear Games.</footer>
 
-    <section id="historySection" class="hidden">
-      <div class="history-header">
-        <h2>Roll History</h2>
-        <button id="clearBtn" class="clear-btn">Clear</button>
-      </div>
-      <ul id="historyList"></ul>
-    </section>
-  </main>
-
-  <script src="data.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>
