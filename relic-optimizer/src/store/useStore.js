@@ -86,7 +86,7 @@ const useStore = create(persist(
         return { altar: newAltar, lastOptimizePlaced: placed }
       }),
   }),
-  { name: 'poe2-relic-optimizer' }
+  { name: 'poe2-relic-optimizer', partialize: (s) => ({ inventory: s.inventory, altar: s.altar }) }
 ))
 
 export default useStore
