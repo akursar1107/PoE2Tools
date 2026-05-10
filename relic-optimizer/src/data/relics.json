@@ -1,0 +1,105 @@
+{
+  "baseTiers": [
+    { "id": "seal", "name": "Seal Relic", "width": 2, "height": 1, "tier": "small" },
+    { "id": "urn", "name": "Urn Relic", "width": 1, "height": 2, "tier": "small" },
+    { "id": "tapestry", "name": "Tapestry Relic", "width": 3, "height": 1, "tier": "medium" },
+    { "id": "amphora", "name": "Amphora Relic", "width": 1, "height": 3, "tier": "medium" },
+    { "id": "coffer", "name": "Coffer Relic", "width": 2, "height": 2, "tier": "large" },
+    { "id": "incense", "name": "Incense Relic", "width": 4, "height": 1, "tier": "large" },
+    { "id": "vase", "name": "Vase Relic", "width": 1, "height": 4, "tier": "large" }
+  ],
+  "uniqueRelics": [
+    {
+      "id": "last_flame",
+      "name": "The Last Flame",
+      "baseId": "incense",
+      "width": 4,
+      "height": 1,
+      "effects": [
+        "Zarokh, the Temporal drops Temporalis",
+        "Maximum Honour is 1",
+        "Damage taken cannot be Absorbed",
+        "Cannot be used with Trials below level 80"
+      ],
+      "destroyedOnUse": true
+    },
+    {
+      "id": "peacemakers_draught",
+      "name": "The Peacemaker's Draught",
+      "baseId": "amphora",
+      "width": 1,
+      "height": 3,
+      "effects": [
+        "Zarokh, the Temporal drops an additional Barya",
+        "Your Defences are zero"
+      ],
+      "destroyedOnUse": false
+    },
+    {
+      "id": "desperate_alliance",
+      "name": "The Desperate Alliance",
+      "baseId": "vase",
+      "width": 1,
+      "height": 4,
+      "effects": [
+        "Zarokh, the Temporal drops Against the Darkness",
+        "Bosses deal 100% increased Damage",
+        "Bosses take 75% less Damage"
+      ],
+      "destroyedOnUse": false
+    },
+    {
+      "id": "changing_seasons",
+      "name": "The Changing Seasons",
+      "baseId": "seal",
+      "width": 2,
+      "height": 1,
+      "effects": [
+        "Zarokh, the Temporal drops Sandstorm Visage",
+        "Cannot restore Honour"
+      ],
+      "destroyedOnUse": false
+    },
+    {
+      "id": "burden_of_leadership",
+      "name": "The Burden of Leadership",
+      "baseId": "tapestry",
+      "width": 3,
+      "height": 1,
+      "effects": [
+        "Zarokh, the Temporal drops Sekhema's Resolve",
+        "Rooms are unknown on the map"
+      ],
+      "destroyedOnUse": false
+    }
+  ],
+  "modifierPool": {
+    "small": [
+      { "id": "honor_resistance", "label": "Honour Resistance", "text": "+(10-15)% to Honour Resistance", "stat": "honor_resistance", "unit": "%", "min": 10, "max": 15 },
+      { "id": "max_honor", "label": "Maximum Honour", "text": "+(5-10) to Maximum Honour", "stat": "max_honor", "unit": "", "min": 5, "max": 10 },
+      { "id": "honor_regen", "label": "Honour Regen", "text": "+(1-2) Honour Regeneration per Second", "stat": "honor_regen", "unit": "/s", "min": 1, "max": 2 },
+      { "id": "boon_effect", "label": "Boon Effect", "text": "+(5-10)% increased Boon Effect", "stat": "boon_effect", "unit": "%", "min": 5, "max": 10 },
+      { "id": "affliction_reduction", "label": "Affliction Reduction", "text": "-(5-10)% reduced Affliction Effect", "stat": "affliction_reduction", "unit": "%", "min": 5, "max": 10 },
+      { "id": "currency_quantity", "label": "Currency Quantity", "text": "+(5-10)% increased Currency Quantity", "stat": "currency_quantity", "unit": "%", "min": 5, "max": 10 }
+    ],
+    "medium": [
+      { "id": "honor_resistance", "label": "Honour Resistance", "text": "+(15-25)% to Honour Resistance", "stat": "honor_resistance", "unit": "%", "min": 15, "max": 25 },
+      { "id": "max_honor", "label": "Maximum Honour", "text": "+(10-20) to Maximum Honour", "stat": "max_honor", "unit": "", "min": 10, "max": 20 },
+      { "id": "honor_regen", "label": "Honour Regen", "text": "+(2-4) Honour Regeneration per Second", "stat": "honor_regen", "unit": "/s", "min": 2, "max": 4 },
+      { "id": "boon_effect", "label": "Boon Effect", "text": "+(10-20)% increased Boon Effect", "stat": "boon_effect", "unit": "%", "min": 10, "max": 20 },
+      { "id": "affliction_reduction", "label": "Affliction Reduction", "text": "-(10-20)% reduced Affliction Effect", "stat": "affliction_reduction", "unit": "%", "min": 10, "max": 20 },
+      { "id": "currency_quantity", "label": "Currency Quantity", "text": "+(10-20)% increased Currency Quantity", "stat": "currency_quantity", "unit": "%", "min": 10, "max": 20 },
+      { "id": "unique_rarity", "label": "Unique Item Rarity", "text": "+(10-20)% increased Unique Item Rarity", "stat": "unique_rarity", "unit": "%", "min": 10, "max": 20 }
+    ],
+    "large": [
+      { "id": "honor_resistance", "label": "Honour Resistance", "text": "+(20-35)% to Honour Resistance", "stat": "honor_resistance", "unit": "%", "min": 20, "max": 35 },
+      { "id": "max_honor", "label": "Maximum Honour", "text": "+(20-40) to Maximum Honour", "stat": "max_honor", "unit": "", "min": 20, "max": 40 },
+      { "id": "honor_regen", "label": "Honour Regen", "text": "+(4-8) Honour Regeneration per Second", "stat": "honor_regen", "unit": "/s", "min": 4, "max": 8 },
+      { "id": "boon_effect", "label": "Boon Effect", "text": "+(20-35)% increased Boon Effect", "stat": "boon_effect", "unit": "%", "min": 20, "max": 35 },
+      { "id": "affliction_reduction", "label": "Affliction Reduction", "text": "-(20-35)% reduced Affliction Effect", "stat": "affliction_reduction", "unit": "%", "min": 20, "max": 35 },
+      { "id": "currency_quantity", "label": "Currency Quantity", "text": "+(20-35)% increased Currency Quantity", "stat": "currency_quantity", "unit": "%", "min": 20, "max": 35 },
+      { "id": "unique_rarity", "label": "Unique Item Rarity", "text": "+(20-35)% increased Unique Item Rarity", "stat": "unique_rarity", "unit": "%", "min": 20, "max": 35 },
+      { "id": "boss_damage", "label": "Boss Damage", "text": "+(20-40)% increased Damage against Bosses", "stat": "boss_damage", "unit": "%", "min": 20, "max": 40 }
+    ]
+  }
+}
