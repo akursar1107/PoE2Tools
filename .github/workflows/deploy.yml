@@ -23,13 +23,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: relic-optimizer/package-lock.json
 
       - name: Build relic-optimizer
         working-directory: relic-optimizer
         run: |
-          npm ci
+          npm install
           npm run build
 
       - name: Assemble site
