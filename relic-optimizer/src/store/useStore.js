@@ -32,7 +32,7 @@ const useStore = create(persist(
   (set) => ({
     inventory: [],
     altar: [],
-    blockedCells: [{ col: 0, row: 3 }, { col: 4, row: 3 }],
+    blockedCells: [{ col: 0, row: 3 }, { col: 4, row: 0 }],
     lastOptimizePlaced: 0,
 
     addToInventory: (relic) =>
