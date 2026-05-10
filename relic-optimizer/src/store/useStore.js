@@ -33,6 +33,7 @@ const useStore = create(persist(
     inventory: [],
     altar: [],
     blockedCells: [{ col: 0, row: 3 }, { col: 4, row: 3 }],
+    lastOptimizePlaced: 0,
 
     addToInventory: (relic) =>
       set(s => ({ inventory: [...s.inventory, relic] })),
@@ -52,6 +53,38 @@ const useStore = create(persist(
       set(s => ({ altar: s.altar.filter(p => p.relicId !== relicId) })),
 
     clearAltar: () => set({ altar: [] }),
+
+    optimizeForStat: (statKey) =>
+      set(s => {
+        const alreadyPlaced = new Set(s.altar.map(p => p.relicId))
+        // Relics not on the altar that have the target stat
+        const candidates = s.inventory
+          .filter(r => !alreadyPlaced.has(r.id))
+          .filter(r => r.mods?.some(m => m.stat === statKey))
+          .sort((a, b) => {
+            const aVal = a.mods.filter(m => m.stat === statKey).reduce((sum, m) => sum + (m.value || 0), 0)
+            const bVal = b.mods.filter(m => m.stat === statKey).reduce((sum, m) => sum + (m.value || 0), 0)
+            return bVal - aVal
+          })
+
+        const newAltar = [...s.altar]
+        let placed = 0
+
+        for (const relic of candidates) {
+          let found = false
+          for (let row = 0; row < ROWS && !found; row++) {
+            for (let col = 0; col < COLS && !found; col++) {
+              if (canPlace(relic, col, row, newAltar, s.inventory, s.blockedCells)) {
+                newAltar.push({ relicId: relic.id, col, row })
+                placed++
+                found = true
+              }
+            }
+          }
+        }
+
+        return { altar: newAltar, lastOptimizePlaced: placed }
+      }),
   }),
   { name: 'poe2-relic-optimizer' }
 ))

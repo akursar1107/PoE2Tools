@@ -5,6 +5,7 @@ import Header from './components/Header'
 import InventoryPanel from './components/InventoryPanel'
 import AltarGrid from './components/AltarGrid'
 import StatsPanel from './components/StatsPanel'
+import OptimizePanel from './components/OptimizePanel'
 import useStore, { canPlace } from './store/useStore'
 
 export default function App() {
@@ -56,7 +57,10 @@ export default function App() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '1rem' }}>
             <AltarGrid activeRelic={activeRelic} overCell={overCell} />
           </div>
-          <StatsPanel />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <StatsPanel />
+            <OptimizePanel />
+          </div>
         </div>
       </div>
 
