@@ -6,6 +6,10 @@ import AddRelicModal from './AddRelicModal'
 export default function InventoryPanel() {
   const inventory = useStore(s => s.inventory)
   const [showModal, setShowModal] = useState(false)
+  const [modalTab, setModalTab] = useState('manual')
+
+  function openManual() { setModalTab('manual'); setShowModal(true) }
+  function openPaste() { setModalTab('paste'); setShowModal(true) }
 
   return (
     <aside style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -16,15 +20,28 @@ export default function InventoryPanel() {
         }}>
           Inventory ({inventory.length})
         </h2>
-        <button
-          onClick={() => setShowModal(true)}
-          style={{
-            padding: '0.3rem 0.75rem', background: 'var(--accent)', border: 'none',
-            borderRadius: 6, color: '#0f1117', fontWeight: 700, cursor: 'pointer', fontSize: '0.8rem',
-          }}
-        >
-          + Add
-        </button>
+        <div style={{ display: 'flex', gap: '0.4rem' }}>
+          <button
+            onClick={openPaste}
+            style={{
+              padding: '0.3rem 0.6rem', background: 'var(--surface-alt)',
+              border: '1px solid var(--border)', borderRadius: 6,
+              color: 'var(--text)', cursor: 'pointer', fontSize: '0.8rem',
+            }}
+            title="Paste relic from game (Ctrl+C in-game)"
+          >
+            📋 Paste
+          </button>
+          <button
+            onClick={openManual}
+            style={{
+              padding: '0.3rem 0.75rem', background: 'var(--accent)', border: 'none',
+              borderRadius: 6, color: '#0f1117', fontWeight: 700, cursor: 'pointer', fontSize: '0.8rem',
+            }}
+          >
+            + Add
+          </button>
+        </div>
       </div>
 
       {inventory.length === 0 && (
@@ -39,7 +56,7 @@ export default function InventoryPanel() {
         ))}
       </div>
 
-      {showModal && <AddRelicModal onClose={() => setShowModal(false)} />}
+      {showModal && <AddRelicModal onClose={() => setShowModal(false)} initialTab={modalTab} />}
     </aside>
   )
 }

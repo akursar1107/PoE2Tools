@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import relicsData from '../data/relics.json'
 import useStore from '../store/useStore'
+import { parseRelicText } from '../utils/parseRelicText'
 
 const selectStyle = {
   width: '100%',
@@ -20,12 +21,20 @@ const labelStyle = {
   marginBottom: 4,
 }
 
-export default function AddRelicModal({ onClose }) {
+export default function AddRelicModal({ onClose, initialTab = 'manual' }) {
   const addToInventory = useStore(s => s.addToInventory)
+  const [tab, setTab] = useState(initialTab)
+
+  // Manual tab state
   const [rarity, setRarity] = useState('magic')
   const [baseId, setBaseId] = useState(relicsData.baseTiers[0].id)
   const [uniqueId, setUniqueId] = useState(relicsData.uniqueRelics[0].id)
   const [mods, setMods] = useState([{ modId: '', value: '' }])
+
+  // Paste tab state
+  const [pasteText, setPasteText] = useState('')
+  const [pasteError, setPasteError] = useState('')
+  const [pasteWarnings, setPasteWarnings] = useState([])
 
   const selectedBase = relicsData.baseTiers.find(b => b.id === baseId)
   const modsForTier = relicsData.modifierPool[selectedBase?.tier || 'small']
@@ -90,6 +99,23 @@ export default function AddRelicModal({ onClose }) {
     onClose()
   }
 
+  function handlePasteImport() {
+    setPasteError('')
+    setPasteWarnings([])
+    const result = parseRelicText(pasteText)
+    if (!result) {
+      setPasteError('Could not parse this text. Make sure you copied a Relic from PoE2 (hover + Ctrl+C).')
+      return
+    }
+    addToInventory({ id: uuid(), ...result.relic })
+    if (result.warnings.length > 0) {
+      setPasteWarnings(result.warnings)
+      setTimeout(onClose, 2500)
+    } else {
+      onClose()
+    }
+  }
+
   return (
     <div
       style={{
@@ -104,7 +130,7 @@ export default function AddRelicModal({ onClose }) {
           border: '1px solid var(--border)',
           borderRadius: 12,
           padding: '1.5rem',
-          width: 360,
+          width: 380,
           maxWidth: '95vw',
           display: 'flex',
           flexDirection: 'column',
@@ -116,112 +142,186 @@ export default function AddRelicModal({ onClose }) {
           Add Relic to Inventory
         </h2>
 
-        {/* Rarity toggle */}
+        {/* Tab switcher */}
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          {['magic', 'unique'].map(r => (
+          {[['manual', 'Manual'], ['paste', 'Paste from Game']].map(([key, label]) => (
             <button
-              key={r}
-              onClick={() => setRarity(r)}
+              key={key}
+              onClick={() => setTab(key)}
               style={{
                 flex: 1, padding: '0.4rem', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem',
-                background: rarity === r ? 'var(--accent)' : 'var(--surface-alt)',
-                color: rarity === r ? '#0f1117' : 'var(--text)',
-                border: `1px solid ${rarity === r ? 'var(--accent)' : 'var(--border)'}`,
-                fontWeight: rarity === r ? 700 : 400,
+                background: tab === key ? 'var(--accent)' : 'var(--surface-alt)',
+                color: tab === key ? '#0f1117' : 'var(--text)',
+                border: `1px solid ${tab === key ? 'var(--accent)' : 'var(--border)'}`,
+                fontWeight: tab === key ? 700 : 400,
               }}
             >
-              {r.charAt(0).toUpperCase() + r.slice(1)}
+              {label}
             </button>
           ))}
         </div>
 
-        {rarity === 'magic' ? (
+        {tab === 'paste' ? (
           <>
-            <div>
-              <label style={labelStyle}>Base Type</label>
-              <select
-                style={selectStyle}
-                value={baseId}
-                onChange={e => handleBaseChange(e.target.value)}
-              >
-                {relicsData.baseTiers.map(b => (
-                  <option key={b.id} value={b.id}>{b.name} ({b.width}×{b.height})</option>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
+              In-game, hover a Relic and press <strong>Ctrl+C</strong>, then paste below.
+            </p>
+            <textarea
+              value={pasteText}
+              onChange={e => { setPasteText(e.target.value); setPasteError(''); setPasteWarnings([]) }}
+              placeholder={'Item Class: Relics\nRarity: Magic\nHonourable Seal Relic of Entry\n--------\n...'}
+              rows={8}
+              style={{
+                width: '100%', boxSizing: 'border-box', padding: '0.5rem',
+                background: 'var(--surface-alt)', border: `1px solid ${pasteError ? '#e05' : 'var(--border)'}`,
+                borderRadius: 6, color: 'var(--text)', fontSize: '0.8rem',
+                fontFamily: 'monospace', resize: 'vertical',
+              }}
+            />
+            {pasteError && (
+              <p style={{ color: '#e05', fontSize: '0.8rem', margin: 0 }}>{pasteError}</p>
+            )}
+            {pasteWarnings.length > 0 && (
+              <div style={{ background: 'rgba(200,155,60,0.1)', border: '1px solid var(--accent)', borderRadius: 6, padding: '0.5rem' }}>
+                <p style={{ fontSize: '0.75rem', color: 'var(--accent)', margin: '0 0 0.25rem' }}>⚠ Added with warnings:</p>
+                {pasteWarnings.map((w, i) => (
+                  <p key={i} style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>{w}</p>
                 ))}
-              </select>
-            </div>
-
-            <div>
-              <label style={labelStyle}>Modifiers (up to 2)</label>
-              {mods.map((mod, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.4rem' }}>
-                  <select
-                    style={{ ...selectStyle, flex: 1 }}
-                    value={mod.modId}
-                    onChange={e => updateMod(i, 'modId', e.target.value)}
-                  >
-                    <option value="">— pick mod —</option>
-                    {modsForTier.map(m => (
-                      <option key={m.id} value={m.id}>{m.label} ({m.min}–{m.max})</option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    placeholder="val"
-                    value={mod.value}
-                    onChange={e => updateMod(i, 'value', e.target.value)}
-                    style={{
-                      width: 70, padding: '0.5rem',
-                      background: 'var(--surface-alt)', border: '1px solid var(--border)',
-                      borderRadius: 6, color: 'var(--text)', fontSize: '0.9rem',
-                    }}
-                  />
-                  <button
-                    onClick={() => removeMod(i)}
-                    style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.1rem' }}
-                  >×</button>
-                </div>
-              ))}
-              {mods.length < 2 && (
-                <button
-                  onClick={addMod}
-                  style={{ fontSize: '0.8rem', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
-                >
-                  + Add modifier
-                </button>
-              )}
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button
+                onClick={onClose}
+                style={{
+                  padding: '0.5rem 1rem', background: 'none', border: '1px solid var(--border)',
+                  borderRadius: 6, color: 'var(--text-muted)', cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePasteImport}
+                disabled={!pasteText.trim()}
+                style={{
+                  padding: '0.5rem 1.25rem', background: 'var(--accent)', border: 'none',
+                  borderRadius: 6, color: '#0f1117', fontWeight: 700, cursor: 'pointer',
+                  opacity: pasteText.trim() ? 1 : 0.5,
+                }}
+              >
+                Import
+              </button>
             </div>
           </>
         ) : (
-          <div>
-            <label style={labelStyle}>Unique Relic</label>
-            <select style={selectStyle} value={uniqueId} onChange={e => setUniqueId(e.target.value)}>
-              {relicsData.uniqueRelics.map(u => (
-                <option key={u.id} value={u.id}>{u.name}</option>
+          <>
+            {/* Rarity toggle */}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              {['magic', 'unique'].map(r => (
+                <button
+                  key={r}
+                  onClick={() => setRarity(r)}
+                  style={{
+                    flex: 1, padding: '0.4rem', borderRadius: 6, cursor: 'pointer', fontSize: '0.85rem',
+                    background: rarity === r ? 'var(--accent)' : 'var(--surface-alt)',
+                    color: rarity === r ? '#0f1117' : 'var(--text)',
+                    border: `1px solid ${rarity === r ? 'var(--accent)' : 'var(--border)'}`,
+                    fontWeight: rarity === r ? 700 : 400,
+                  }}
+                >
+                  {r.charAt(0).toUpperCase() + r.slice(1)}
+                </button>
               ))}
-            </select>
-          </div>
-        )}
+            </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-          <button
-            onClick={onClose}
-            style={{
-              padding: '0.5rem 1rem', background: 'none', border: '1px solid var(--border)',
-              borderRadius: 6, color: 'var(--text-muted)', cursor: 'pointer',
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleAdd}
-            style={{
-              padding: '0.5rem 1.25rem', background: 'var(--accent)', border: 'none',
-              borderRadius: 6, color: '#0f1117', fontWeight: 700, cursor: 'pointer',
-            }}
-          >
-            Add
-          </button>
-        </div>
+            {rarity === 'magic' ? (
+              <>
+                <div>
+                  <label style={labelStyle}>Base Type</label>
+                  <select
+                    style={selectStyle}
+                    value={baseId}
+                    onChange={e => handleBaseChange(e.target.value)}
+                  >
+                    {relicsData.baseTiers.map(b => (
+                      <option key={b.id} value={b.id}>{b.name} ({b.width}×{b.height})</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Modifiers (up to 2)</label>
+                  {mods.map((mod, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.4rem' }}>
+                      <select
+                        style={{ ...selectStyle, flex: 1 }}
+                        value={mod.modId}
+                        onChange={e => updateMod(i, 'modId', e.target.value)}
+                      >
+                        <option value="">— pick mod —</option>
+                        {modsForTier.map(m => (
+                          <option key={m.id} value={m.id}>{m.label} ({m.min}–{m.max})</option>
+                        ))}
+                      </select>
+                      <input
+                        type="number"
+                        placeholder="val"
+                        value={mod.value}
+                        onChange={e => updateMod(i, 'value', e.target.value)}
+                        style={{
+                          width: 70, padding: '0.5rem',
+                          background: 'var(--surface-alt)', border: '1px solid var(--border)',
+                          borderRadius: 6, color: 'var(--text)', fontSize: '0.9rem',
+                        }}
+                      />
+                      <button
+                        onClick={() => removeMod(i)}
+                        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.1rem' }}
+                      >×</button>
+                    </div>
+                  ))}
+                  {mods.length < 2 && (
+                    <button
+                      onClick={addMod}
+                      style={{ fontSize: '0.8rem', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
+                      + Add modifier
+                    </button>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div>
+                <label style={labelStyle}>Unique Relic</label>
+                <select style={selectStyle} value={uniqueId} onChange={e => setUniqueId(e.target.value)}>
+                  {relicsData.uniqueRelics.map(u => (
+                    <option key={u.id} value={u.id}>{u.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <button
+                onClick={onClose}
+                style={{
+                  padding: '0.5rem 1rem', background: 'none', border: '1px solid var(--border)',
+                  borderRadius: 6, color: 'var(--text-muted)', cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAdd}
+                style={{
+                  padding: '0.5rem 1.25rem', background: 'var(--accent)', border: 'none',
+                  borderRadius: 6, color: '#0f1117', fontWeight: 700, cursor: 'pointer',
+                }}
+              >
+                Add
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
