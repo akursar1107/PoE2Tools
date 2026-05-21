@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+import { skillGems } from '../data/skills.mjs';
+import { supports } from '../data/supports.mjs';
 import { filterEntries, getSkillsForSupport, getSupportCriteria, getSupportsForSkill, groupEntries } from './wiki-data.mjs';
 
 test('filterEntries matches query across name, summary, and tags', () => {
@@ -70,6 +72,21 @@ test('groupEntries groups support gems by category', () => {
     ],
     speed: [{ id: 'arcane-tempo', category: 'speed' }],
   });
+});
+
+test('skill gems expose navigation fields', () => {
+  assert.equal(skillGems.find((entry) => entry.id === 'fireball').kind, 'spell');
+  assert.deepEqual(skillGems.find((entry) => entry.id === 'fireball').themes, ['fire', 'projectile']);
+  assert.equal(skillGems.find((entry) => entry.id === 'skeletal-warrior').kind, 'minion');
+  assert.deepEqual(skillGems.find((entry) => entry.id === 'skeletal-warrior').themes, ['physical']);
+  assert.equal(skillGems.find((entry) => entry.id === 'flash-grenade').kind, 'utility');
+  assert.deepEqual(skillGems.find((entry) => entry.id === 'flash-grenade').themes, []);
+});
+
+test('support gems expose category', () => {
+  assert.equal(supports.find((entry) => entry.id === 'added-fire-damage').category, 'damage');
+  assert.equal(supports.find((entry) => entry.id === 'arcane-tempo').category, 'speed');
+  assert.equal(supports.find((entry) => entry.id === 'fork').category, 'projectile');
 });
 
 test('filterEntries keeps only entries containing every selected tag', () => {
