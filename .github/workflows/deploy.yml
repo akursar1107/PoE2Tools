@@ -33,9 +33,16 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site/picker
+          mkdir -p _site/wiki/data
+          mkdir -p _site/wiki/lib
           mkdir -p _site/relic-optimizer
           cp index.html _site/
           cp -r picker/. _site/picker/
+          cp wiki/index.html _site/wiki/
+          cp wiki/style.css _site/wiki/
+          cp wiki/app.mjs _site/wiki/
+          cp wiki/data/*.mjs _site/wiki/data/
+          cp wiki/lib/wiki-data.mjs _site/wiki/lib/
           cp -r relic-optimizer/dist/. _site/relic-optimizer/
 
       - name: Upload Pages artifact

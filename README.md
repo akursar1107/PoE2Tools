@@ -1,6 +1,11 @@
-# PoE2 Build Randomizer
+# PoE2 Tools
 
-A lightweight web app that randomly picks a **Path of Exile 2** ascendancy and skill gem when you want to try something new.
+A lightweight collection of **Path of Exile 2** web tools hosted together on GitHub Pages.
+
+## Included Apps
+- **Build Randomizer** (`picker/`) — rolls a random ascendancy and skill gem
+- **Quick Reference Wiki** (`wiki/`) — browse ascendancies, skill gems, and support gems
+- **Relic Altar Optimizer** (`relic-optimizer/`) — plan and optimize Trial of the Sekhemas relic layouts
 
 ## Features
 - Random ascendancy (all 12 across 6 classes)
@@ -21,5 +26,5 @@ Just open `index.html` in your browser. No build step required.
 
 ## Updating Data
 
-- **Ascendancies**: edit `data.js` → `ascendancies` array
-- **Skill gems**: edit `data.js` → `skillGems` array
+- **Build Randomizer**: edit `picker/data.js`
+- **Quick Reference Wiki**: edit `wiki/data/*.mjs`

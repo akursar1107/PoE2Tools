@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PoE2 Quick Reference</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">PoE2 Tools</p>
+      <h1>Quick Reference Wiki</h1>
+      <p class="subtitle">
+        Fast browseable reference for ascendancies, skill gems, and support gems.
+      </p>
+    </div>
+    <a class="back-link" href="../">Back to tools</a>
+  </header>
+
+  <main class="shell">
+    <section class="toolbar">
+      <div class="tabs" id="tabs" aria-label="Reference sections"></div>
+      <label class="search">
+        <span>Search</span>
+        <input id="searchInput" type="search" placeholder="Search by name, tag, or summary" />
+      </label>
+      <div class="tag-bar" id="tagBar" aria-label="Popular filters"></div>
+    </section>
+
+    <section class="status-card">
+      <p id="resultsMeta"></p>
+      <p class="status-note">
+        Starter dataset based on community references and manual curation. This version is built to be easy to expand.
+      </p>
+    </section>
+
+    <section id="results" class="results" aria-live="polite"></section>
+  </main>
+
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>
