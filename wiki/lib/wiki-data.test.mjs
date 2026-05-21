@@ -1,7 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { filterEntries, getSkillsForSupport, getSupportCriteria, getSupportsForSkill } from './wiki-data.mjs';
+import { validateWikiData } from '../../tools/validate-wiki-data.mjs';
+import { ascendancies } from '../data/ascendancies.mjs';
+import { skillGems } from '../data/skills.mjs';
+import { supports } from '../data/supports.mjs';
+import {
+  buildSidebarGroups,
+  filterEntries,
+  getSkillsForSupport,
+  getSupportCriteria,
+  getSupportsForSkill,
+  groupEntries,
+} from './wiki-data.mjs';
 
 test('filterEntries matches query across name, summary, and tags', () => {
   const entries = [
@@ -22,6 +33,110 @@ test('filterEntries matches query across name, summary, and tags', () => {
   const filtered = filterEntries(entries, 'demon', []);
 
   assert.deepEqual(filtered.map((entry) => entry.id), ['infernalist']);
+});
+
+test('groupEntries groups ascendancies by className', () => {
+  const entries = [
+    { id: 'infernalist', className: 'Witch' },
+    { id: 'blood-mage', className: 'Witch' },
+    { id: 'deadeye', className: 'Ranger' },
+  ];
+
+  assert.deepEqual(groupEntries(entries, 'className'), {
+    Ranger: [{ id: 'deadeye', className: 'Ranger' }],
+    Witch: [
+      { id: 'infernalist', className: 'Witch' },
+      { id: 'blood-mage', className: 'Witch' },
+    ],
+  });
+});
+
+test('groupEntries groups skill gems by kind', () => {
+  const entries = [
+    { id: 'fireball', kind: 'spell' },
+    { id: 'spark', kind: 'spell' },
+    { id: 'boneshatter', kind: 'attack' },
+  ];
+
+  assert.deepEqual(groupEntries(entries, 'kind'), {
+    attack: [{ id: 'boneshatter', kind: 'attack' }],
+    spell: [
+      { id: 'fireball', kind: 'spell' },
+      { id: 'spark', kind: 'spell' },
+    ],
+  });
+});
+
+test('groupEntries groups support gems by category', () => {
+  const entries = [
+    { id: 'controlled-destruction', category: 'damage' },
+    { id: 'added-fire-damage', category: 'damage' },
+    { id: 'arcane-tempo', category: 'speed' },
+  ];
+
+  assert.deepEqual(groupEntries(entries, 'category'), {
+    damage: [
+      { id: 'controlled-destruction', category: 'damage' },
+      { id: 'added-fire-damage', category: 'damage' },
+    ],
+    speed: [{ id: 'arcane-tempo', category: 'speed' }],
+  });
+});
+
+test('buildSidebarGroups returns class-based groups for ascendancies', () => {
+  const groups = buildSidebarGroups('ascendancies', ascendancies);
+
+  assert.ok(groups.Witch);
+  assert.deepEqual(
+    groups.Witch.map((entry) => entry.id),
+    ['blood-mage', 'infernalist'],
+  );
+});
+
+test('all skill gems have kind and themes fields', () => {
+  skillGems.forEach((skill) => {
+    assert.ok(typeof skill.kind === 'string' && skill.kind.length > 0, `${skill.id} is missing kind field`);
+    assert.ok(Array.isArray(skill.themes), `${skill.id} is missing themes array`);
+  });
+});
+
+test('all support gems have category field', () => {
+  supports.forEach((support) => {
+    assert.ok(
+      typeof support.category === 'string' && support.category.length > 0,
+      `${support.id} is missing category field`,
+    );
+  });
+});
+
+test('validateWikiData reports missing navigation metadata', () => {
+  const errors = validateWikiData({
+    skillGems: [{ id: 'fireball', themes: ['fire'] }],
+    supports: [{ id: 'arcane-tempo', category: 'speed' }],
+  });
+
+  assert.deepEqual(errors, [
+    'skill fireball is missing kind',
+    'support arcane-tempo is missing worksWith or matchAll metadata',
+  ]);
+});
+
+test('validateWikiData reports malformed nullish skill and support entries', () => {
+  const errors = validateWikiData({
+    skillGems: [null, undefined],
+    supports: [null, undefined],
+  });
+
+  assert.deepEqual(errors, [
+    'skill at index 1 is not a valid object',
+    'skill at index 2 is not a valid object',
+    'support at index 1 is not a valid object',
+    'support at index 2 is not a valid object',
+  ]);
+});
+
+test('validateWikiData accepts current wiki datasets', () => {
+  assert.deepEqual(validateWikiData({ skillGems, supports }), []);
 });
 
 test('filterEntries keeps only entries containing every selected tag', () => {
