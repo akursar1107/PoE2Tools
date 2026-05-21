@@ -28,3 +28,7 @@ Just open `index.html` in your browser. No build step required.
 
 - **Build Randomizer**: edit `picker/data.js`
 - **Quick Reference Wiki**: edit `wiki/data/*.mjs`
+
+### Validate wiki updates
+
+After patch-note edits to `wiki/data/*.mjs`, run `node --test wiki/lib/wiki-data.test.mjs` and `node tools/validate-wiki-data.mjs`.

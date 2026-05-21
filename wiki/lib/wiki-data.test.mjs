@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+import { validateWikiData } from '../../tools/validate-wiki-data.mjs';
 import { ascendancies } from '../data/ascendancies.mjs';
 import { skillGems } from '../data/skills.mjs';
 import { supports } from '../data/supports.mjs';
@@ -106,6 +107,22 @@ test('all support gems have category field', () => {
       `${support.id} is missing category field`,
     );
   });
+});
+
+test('validateWikiData reports missing navigation metadata', () => {
+  const errors = validateWikiData({
+    skillGems: [{ id: 'fireball', themes: ['fire'] }],
+    supports: [{ id: 'arcane-tempo', category: 'speed' }],
+  });
+
+  assert.deepEqual(errors, [
+    'skill fireball is missing kind',
+    'support arcane-tempo is missing worksWith or matchAll metadata',
+  ]);
+});
+
+test('validateWikiData accepts current wiki datasets', () => {
+  assert.deepEqual(validateWikiData({ skillGems, supports }), []);
 });
 
 test('filterEntries keeps only entries containing every selected tag', () => {
