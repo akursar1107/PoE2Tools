@@ -121,6 +121,20 @@ test('validateWikiData reports missing navigation metadata', () => {
   ]);
 });
 
+test('validateWikiData reports malformed nullish skill and support entries', () => {
+  const errors = validateWikiData({
+    skillGems: [null, undefined],
+    supports: [null, undefined],
+  });
+
+  assert.deepEqual(errors, [
+    'skill at index 1 is not a valid object',
+    'skill at index 2 is not a valid object',
+    'support at index 1 is not a valid object',
+    'support at index 2 is not a valid object',
+  ]);
+});
+
 test('validateWikiData accepts current wiki datasets', () => {
   assert.deepEqual(validateWikiData({ skillGems, supports }), []);
 });

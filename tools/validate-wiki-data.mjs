@@ -18,6 +18,11 @@ export function validateWikiData({
   const errors = [];
 
   skills.forEach((skill, index) => {
+    if (!skill || typeof skill !== 'object') {
+      errors.push(`skill at index ${index + 1} is not a valid object`);
+      return;
+    }
+
     const id = skill.id ?? `#${index + 1}`;
 
     if (!hasText(skill.kind)) {
@@ -30,6 +35,11 @@ export function validateWikiData({
   });
 
   supportGems.forEach((support, index) => {
+    if (!support || typeof support !== 'object') {
+      errors.push(`support at index ${index + 1} is not a valid object`);
+      return;
+    }
+
     const id = support.id ?? `#${index + 1}`;
 
     if (!hasText(support.category)) {
