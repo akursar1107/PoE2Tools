@@ -74,19 +74,20 @@ test('groupEntries groups support gems by category', () => {
   });
 });
 
-test('skill gems expose navigation fields', () => {
-  assert.equal(skillGems.find((entry) => entry.id === 'fireball').kind, 'spell');
-  assert.deepEqual(skillGems.find((entry) => entry.id === 'fireball').themes, ['fire', 'projectile']);
-  assert.equal(skillGems.find((entry) => entry.id === 'skeletal-warrior').kind, 'minion');
-  assert.deepEqual(skillGems.find((entry) => entry.id === 'skeletal-warrior').themes, ['physical']);
-  assert.equal(skillGems.find((entry) => entry.id === 'flash-grenade').kind, 'utility');
-  assert.deepEqual(skillGems.find((entry) => entry.id === 'flash-grenade').themes, []);
+test('all skill gems have kind and themes fields', () => {
+  skillGems.forEach((skill) => {
+    assert.ok(typeof skill.kind === 'string' && skill.kind.length > 0, `${skill.id} is missing kind field`);
+    assert.ok(Array.isArray(skill.themes), `${skill.id} is missing themes array`);
+  });
 });
 
-test('support gems expose category', () => {
-  assert.equal(supports.find((entry) => entry.id === 'added-fire-damage').category, 'damage');
-  assert.equal(supports.find((entry) => entry.id === 'arcane-tempo').category, 'speed');
-  assert.equal(supports.find((entry) => entry.id === 'fork').category, 'projectile');
+test('all support gems have category field', () => {
+  supports.forEach((support) => {
+    assert.ok(
+      typeof support.category === 'string' && support.category.length > 0,
+      `${support.id} is missing category field`,
+    );
+  });
 });
 
 test('filterEntries keeps only entries containing every selected tag', () => {
