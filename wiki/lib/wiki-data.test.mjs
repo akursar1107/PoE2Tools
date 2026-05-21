@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { filterEntries, getSkillsForSupport, getSupportCriteria, getSupportsForSkill } from './wiki-data.mjs';
+import { filterEntries, getSkillsForSupport, getSupportCriteria, getSupportsForSkill, groupEntries } from './wiki-data.mjs';
 
 test('filterEntries matches query across name, summary, and tags', () => {
   const entries = [
@@ -22,6 +22,54 @@ test('filterEntries matches query across name, summary, and tags', () => {
   const filtered = filterEntries(entries, 'demon', []);
 
   assert.deepEqual(filtered.map((entry) => entry.id), ['infernalist']);
+});
+
+test('groupEntries groups ascendancies by className', () => {
+  const entries = [
+    { id: 'infernalist', className: 'Witch' },
+    { id: 'blood-mage', className: 'Witch' },
+    { id: 'deadeye', className: 'Ranger' },
+  ];
+
+  assert.deepEqual(groupEntries(entries, 'className'), {
+    Ranger: [{ id: 'deadeye', className: 'Ranger' }],
+    Witch: [
+      { id: 'infernalist', className: 'Witch' },
+      { id: 'blood-mage', className: 'Witch' },
+    ],
+  });
+});
+
+test('groupEntries groups skill gems by kind', () => {
+  const entries = [
+    { id: 'fireball', kind: 'spell' },
+    { id: 'spark', kind: 'spell' },
+    { id: 'boneshatter', kind: 'attack' },
+  ];
+
+  assert.deepEqual(groupEntries(entries, 'kind'), {
+    attack: [{ id: 'boneshatter', kind: 'attack' }],
+    spell: [
+      { id: 'fireball', kind: 'spell' },
+      { id: 'spark', kind: 'spell' },
+    ],
+  });
+});
+
+test('groupEntries groups support gems by category', () => {
+  const entries = [
+    { id: 'controlled-destruction', category: 'damage' },
+    { id: 'added-fire-damage', category: 'damage' },
+    { id: 'arcane-tempo', category: 'speed' },
+  ];
+
+  assert.deepEqual(groupEntries(entries, 'category'), {
+    damage: [
+      { id: 'controlled-destruction', category: 'damage' },
+      { id: 'added-fire-damage', category: 'damage' },
+    ],
+    speed: [{ id: 'arcane-tempo', category: 'speed' }],
+  });
 });
 
 test('filterEntries keeps only entries containing every selected tag', () => {

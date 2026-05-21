@@ -30,6 +30,19 @@ function supportMatchesSkill(skill, support) {
   return worksWith.some((tag) => skillTags.has(tag));
 }
 
+export function groupEntries(entries, field) {
+  const groups = entries.reduce((result, entry) => {
+    const key = entry[field] ?? 'other';
+    result[key] ??= [];
+    result[key].push(entry);
+    return result;
+  }, {});
+
+  return Object.fromEntries(
+    Object.entries(groups).sort(([left], [right]) => String(left).localeCompare(String(right))),
+  );
+}
+
 export function filterEntries(entries, query = '', selectedTags = []) {
   const normalizedQuery = normalizeText(query);
   const requiredTags = selectedTags.map(normalizeText);
