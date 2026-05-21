@@ -1,9 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+import { ascendancies } from '../data/ascendancies.mjs';
 import { skillGems } from '../data/skills.mjs';
 import { supports } from '../data/supports.mjs';
-import { filterEntries, getSkillsForSupport, getSupportCriteria, getSupportsForSkill, groupEntries } from './wiki-data.mjs';
+import {
+  buildSidebarGroups,
+  filterEntries,
+  getSkillsForSupport,
+  getSupportCriteria,
+  getSupportsForSkill,
+  groupEntries,
+} from './wiki-data.mjs';
 
 test('filterEntries matches query across name, summary, and tags', () => {
   const entries = [
@@ -72,6 +80,16 @@ test('groupEntries groups support gems by category', () => {
     ],
     speed: [{ id: 'arcane-tempo', category: 'speed' }],
   });
+});
+
+test('buildSidebarGroups returns class-based groups for ascendancies', () => {
+  const groups = buildSidebarGroups('ascendancies', ascendancies);
+
+  assert.ok(groups.Witch);
+  assert.deepEqual(
+    groups.Witch.map((entry) => entry.id),
+    ['blood-mage', 'infernalist'],
+  );
 });
 
 test('all skill gems have kind and themes fields', () => {

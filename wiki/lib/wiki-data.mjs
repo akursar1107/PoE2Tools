@@ -14,6 +14,12 @@ function flattenEntryParts(value) {
   return [normalizeText(value)];
 }
 
+const sidebarGroupFields = {
+  ascendancies: 'className',
+  skills: 'kind',
+  supports: 'category',
+};
+
 export function getSupportCriteria(support) {
   return support.matchAll ?? support.worksWith ?? [];
 }
@@ -40,6 +46,21 @@ export function groupEntries(entries, field) {
 
   return Object.fromEntries(
     Object.entries(groups).sort(([left], [right]) => String(left).localeCompare(String(right))),
+  );
+}
+
+export function buildSidebarGroups(sectionId, entries) {
+  const field = sidebarGroupFields[sectionId];
+
+  if (!field) {
+    return { all: [...entries].sort((left, right) => left.name.localeCompare(right.name)) };
+  }
+
+  return Object.fromEntries(
+    Object.entries(groupEntries(entries, field)).map(([groupName, groupEntriesList]) => [
+      groupName,
+      [...groupEntriesList].sort((left, right) => left.name.localeCompare(right.name)),
+    ]),
   );
 }
 
