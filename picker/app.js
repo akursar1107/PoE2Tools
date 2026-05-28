@@ -3,9 +3,12 @@ const resultSection = document.getElementById('result');
 const classTag = document.getElementById('classTag');
 const ascendancyValue = document.getElementById('ascendancyValue');
 const skillValue = document.getElementById('skillValue');
+const downloadBtn = document.getElementById('downloadBtn');
 const historySection = document.getElementById('historySection');
 const historyList = document.getElementById('historyList');
 const clearBtn = document.getElementById('clearBtn');
+
+let currentRoll = null;
 
 function getRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -14,23 +17,21 @@ function getRandom(arr) {
 function roll() {
   const ascendancy = getRandom(ascendancies);
   const skill = getRandom(skillGems);
+  currentRoll = { ascendancy, skill };
 
-  // Update result cards
   classTag.textContent = ascendancy.class;
   ascendancyValue.textContent = ascendancy.name;
-  skillValue.textContent = skill;
+  skillValue.textContent = skill.name;
 
-  // Show result section
   resultSection.classList.remove('hidden');
+  downloadBtn.classList.remove('hidden');
 
-  // Re-trigger animation
   document.querySelectorAll('.result-card').forEach(card => {
     card.style.animation = 'none';
-    card.offsetHeight; // reflow
+    card.offsetHeight;
     card.style.animation = '';
   });
 
-  // Add to history
   addToHistory(ascendancy, skill);
 }
 
@@ -40,7 +41,7 @@ function addToHistory(ascendancy, skill) {
   const li = document.createElement('li');
   li.innerHTML = `
     <span class="history-ascendancy">${ascendancy.class} &mdash; ${ascendancy.name}</span>
-    <span class="history-skill">${skill}</span>
+    <span class="history-skill">${skill.name}</span>
   `;
 
   historyList.insertBefore(li, historyList.firstChild);
@@ -51,5 +52,35 @@ function clearHistory() {
   historySection.classList.add('hidden');
 }
 
+function downloadBuild() {
+  if (!currentRoll) return;
+  const { ascendancy, skill } = currentRoll;
+
+  const build = {
+    name: `Random Build: ${ascendancy.name} \u2014 ${skill.name}`,
+    author: 'PoE2Tools',
+    description: 'Randomly generated at PoE2Tools. Drop this file into Documents/My Games/Path of Exile 2/BuildPlanner/',
+    ascendancy: ascendancy.name,
+  };
+
+  if (skill.buildId) {
+    build.skills = [{ id: skill.buildId }];
+  }
+
+  const slug = `${ascendancy.name}-${skill.name}`
+    .toLowerCase()
+    .replace(/['\s]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
+
+  const blob = new Blob([JSON.stringify(build, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${slug}.build`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 rollBtn.addEventListener('click', roll);
 clearBtn.addEventListener('click', clearHistory);
+downloadBtn.addEventListener('click', downloadBuild);
