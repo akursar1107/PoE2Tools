@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PoE2 Passive Tree</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <a href="../" class="back-link">← PoE2 Tools</a>
+    <h1>Passive Skill Tree</h1>
+    <div class="search-wrap">
+      <input id="searchInput" type="search" placeholder="Search nodes or stats…" autocomplete="off" />
+      <ul id="searchResults" class="search-results hidden"></ul>
+    </div>
+  </header>
+
+  <div id="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading tree data…</p>
+  </div>
+
+  <div id="app" class="app hidden">
+    <canvas id="treeCanvas"></canvas>
+
+    <div id="tooltip" class="tooltip hidden"></div>
+
+    <aside id="panel" class="panel hidden">
+      <button id="panelClose" class="panel-close" aria-label="Close">×</button>
+      <div class="panel-type" id="panelType"></div>
+      <h2 id="panelName"></h2>
+      <div id="panelAscendancy" class="panel-ascendancy hidden"></div>
+      <ul id="panelStats" class="panel-stats"></ul>
+    </aside>
+
+    <div class="legend">
+      <span class="legend-node normal"></span> Normal
+      <span class="legend-node notable"></span> Notable
+      <span class="legend-node keystone"></span> Keystone
+      <span class="legend-node ascendancy"></span> Ascendancy
+    </div>
+
+    <div class="zoom-hint">Scroll to zoom · Drag to pan</div>
+  </div>
+
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>
