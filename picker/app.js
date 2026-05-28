@@ -63,6 +63,10 @@ function downloadBuild() {
     ascendancy: ascendancy.name,
   };
 
+  if (ascendancy.passiveNodes && ascendancy.passiveNodes.length) {
+    build.passives = ascendancy.passiveNodes.map(id => String(id));
+  }
+
   if (skill.buildId) {
     build.skills = [{ id: skill.buildId }];
   }
