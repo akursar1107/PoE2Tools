@@ -31,23 +31,7 @@ jobs:
           npm run build
 
       - name: Assemble site
-        run: |
-          mkdir -p _site/picker
-          mkdir -p _site/wiki/data
-          mkdir -p _site/wiki/lib
-          mkdir -p _site/relic-optimizer
-          mkdir -p _site/tree
-          cp index.html _site/
-          cp -r picker/. _site/picker/
-          cp wiki/index.html _site/wiki/
-          cp wiki/style.css _site/wiki/
-          cp wiki/app.mjs _site/wiki/
-          cp wiki/data/*.mjs _site/wiki/data/
-          cp wiki/lib/wiki-data.mjs _site/wiki/lib/
-          cp -r relic-optimizer/dist/. _site/relic-optimizer/
-          cp tree/index.html _site/tree/
-          cp tree/style.css _site/tree/
-          cp tree/app.mjs _site/tree/
+        run: node build.mjs
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

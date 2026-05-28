@@ -1,0 +1,41 @@
+/**
+ * PoE2 Tools — Shared design tokens
+ * All apps import this file to share the visual language.
+ */
+:root {
+  /* ── Colors ─────────────────────────────────────────────── */
+  --bg:           #090b11;
+  --surface:      #1a1d27;
+  --surface-alt:  #22263a;
+  --border:       rgba(129, 148, 188, 0.2);
+  --border-strong: rgba(200, 155, 60, 0.34);
+
+  /* Gold accent — PoE palette */
+  --accent:       #c89b3c;
+  --accent-hover: #e0b84e;
+  --accent-soft:  rgba(200, 155, 60, 0.14);
+
+  /* Text */
+  --text:         #f2eee6;
+  --text-muted:   #9ea7c0;
+
+  /* ── Tree-specific node colors (used by tree viewer) ───── */
+  --node-normal:      #4a5568;
+  --node-notable:     #c89b3c;
+  --node-keystone:    #9f7aea;
+  --node-ascendancy:  #48bb78;
+
+  /* ── Spacing & shape ────────────────────────────────────── */
+  --radius:    10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  /* ── Motion ──────────────────────────────────────────────── */
+  --transition: 0.2s ease;
+  --shadow:     0 28px 60px rgba(0, 0, 0, 0.38);
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-body:    'Segoe UI', system-ui, sans-serif;
+  --font-display: Georgia, 'Times New Roman', serif;
+}

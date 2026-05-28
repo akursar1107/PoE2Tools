@@ -89,7 +89,7 @@ test('buildSidebarGroups returns class-based groups for ascendancies', () => {
   assert.ok(groups.Witch);
   assert.deepEqual(
     groups.Witch.map((entry) => entry.id),
-    ['blood-mage', 'infernalist'],
+    ['blood-mage', 'infernalist', 'lich'],
   );
 });
 

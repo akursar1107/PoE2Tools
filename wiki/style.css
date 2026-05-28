@@ -1,19 +1,4 @@
-:root {
-  --bg: #090b11;
-  --surface: rgba(16, 20, 31, 0.92);
-  --surface-strong: rgba(25, 31, 48, 0.96);
-  --surface-soft: rgba(22, 27, 42, 0.72);
-  --border: rgba(129, 148, 188, 0.2);
-  --border-strong: rgba(200, 155, 60, 0.34);
-  --accent: #c89b3c;
-  --accent-soft: rgba(200, 155, 60, 0.14);
-  --text: #f2eee6;
-  --muted: #9ea7c0;
-  --shadow: 0 28px 60px rgba(0, 0, 0, 0.38);
-  --radius-xl: 24px;
-  --radius-lg: 18px;
-  --radius-md: 14px;
-}
+@import '../shared/tokens.css';
 
 *,
 *::before,
