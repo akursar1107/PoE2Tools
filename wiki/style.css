@@ -121,10 +121,12 @@ h1 {
 
 .sidebar {
   position: sticky;
-  top: 1rem;
+  top: calc(3.2rem + 1.25rem); /* below site nav + gap */
+  height: calc(100vh - 3.2rem - 2.5rem);
   align-self: start;
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .sidebar-panel,
@@ -144,8 +146,27 @@ h1 {
   padding: 1rem;
 }
 
+.sidebar-panel:first-of-type {
+  flex: 0 0 auto;
+}
+
+#groupNav {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
 .sidebar-items {
-  min-height: 20rem;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* allows shrinking in flex layout */
+}
+
+#itemNav {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  padding-right: 4px;
 }
 
 .sidebar-panel-header {
