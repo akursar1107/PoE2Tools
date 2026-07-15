@@ -35,6 +35,14 @@
         <nav id="groupNav" class="group-nav" aria-label="Section groups"></nav>
       </section>
 
+      <section class="sidebar-panel sidebar-filters">
+        <div class="sidebar-panel-header">
+          <p class="sidebar-label">Search & Filters</p>
+        </div>
+        <input id="searchInput" type="search" placeholder="Search by name, tag, or passive..." />
+        <div class="tag-bar" id="tagBar" aria-label="Theme filters"></div>
+      </section>
+
       <section class="sidebar-panel sidebar-items">
         <div class="sidebar-panel-header">
           <p class="sidebar-label">Entries</p>
@@ -45,31 +53,7 @@
     </aside>
 
     <section class="content-pane">
-      <section class="content-hero">
-        <p id="paneEyebrow" class="eyebrow"></p>
-        <h2 id="paneTitle" class="pane-title"></h2>
-        <p id="paneDescription" class="subtitle"></p>
-      </section>
-
-      <section class="toolbar">
-        <label class="search">
-          <span>Search inside this group</span>
-          <input id="searchInput" type="search" placeholder="Search by name, tag, summary, or passive" />
-        </label>
-        <div class="toolbar-copy">
-          <p class="tag-label">Theme filters</p>
-          <div class="tag-bar" id="tagBar" aria-label="Theme filters"></div>
-        </div>
-      </section>
-
-      <section class="status-card">
-        <p id="resultsMeta"></p>
-        <p class="status-note">
-          Starter dataset based on community references and manual curation. Built for quick scanning now, deeper expansion later.
-        </p>
-      </section>
-
-      <section id="results" class="results" aria-live="polite"></section>
+      <div id="results" class="results" aria-live="polite"></div>
     </section>
   </main>
 

@@ -47,12 +47,8 @@ const groupNav = document.getElementById('groupNav');
 const itemNav = document.getElementById('itemNav');
 const groupMeta = document.getElementById('groupMeta');
 const itemMeta = document.getElementById('itemMeta');
-const paneEyebrow = document.getElementById('paneEyebrow');
-const paneTitle = document.getElementById('paneTitle');
-const paneDescription = document.getElementById('paneDescription');
 const tagBarElement = document.getElementById('tagBar');
 const searchInput = document.getElementById('searchInput');
-const resultsMeta = document.getElementById('resultsMeta');
 const resultsElement = document.getElementById('results');
 
 searchInput.addEventListener('input', (event) => {
@@ -268,19 +264,6 @@ function renderTags(entries) {
   });
 }
 
-function renderPaneHeader(section, selectedEntry) {
-  paneEyebrow.textContent = state.activeGroup ? `${section.label} / ${state.activeGroup}` : section.label;
-
-  if (selectedEntry) {
-    paneTitle.textContent = selectedEntry.name;
-    paneDescription.textContent = selectedEntry.summary ?? 'Reference details for the selected entry.';
-    return;
-  }
-
-  paneTitle.textContent = `Browse ${section.label}`;
-  paneDescription.textContent = section.emptyMessage;
-}
-
 function renderAscendancyCard(entry) {
   return `
     <article class="entry-card">
@@ -392,7 +375,7 @@ function renderTagsList(tags = []) {
   `;
 }
 
-function renderResults(section, selectedEntry, visibleEntries) {
+function renderResults(section, selectedEntry) {
   if (!selectedEntry) {
     resultsElement.innerHTML = `
       <div class="empty-state">
@@ -403,40 +386,7 @@ function renderResults(section, selectedEntry, visibleEntries) {
     return;
   }
 
-  const secondaryEntries = visibleEntries.filter((entry) => entry.id !== selectedEntry.id);
-
-  resultsElement.innerHTML = `
-    ${section.renderCard(selectedEntry)}
-    ${secondaryEntries.length > 0 ? `
-      <section class="related-card">
-        <div class="entry-header related-header">
-          <div>
-            <p class="tag-label">Also in ${escapeHtml(state.activeGroup ?? section.label)}</p>
-            <h3 class="entry-title">Browse nearby entries</h3>
-          </div>
-          <span class="count-pill">${secondaryEntries.length}</span>
-        </div>
-        <div class="related-links">
-          ${secondaryEntries.map((entry) => `
-            <button class="related-link" type="button" data-entry-id="${entry.id}">${escapeHtml(entry.name)}</button>
-          `).join('')}
-        </div>
-      </section>
-    ` : ''}
-  `;
-
-  resultsElement.querySelectorAll('[data-entry-id]').forEach((button) => {
-    button.addEventListener('click', () => setActiveEntry(button.dataset.entryId));
-  });
-}
-
-function renderMeta(section, visibleEntries) {
-  const tagText = state.selectedTags.length === 0
-    ? 'all themes'
-    : `themes: ${state.selectedTags.join(', ')}`;
-  const scopeText = state.activeGroup ? `${section.label.toLowerCase()} in ${state.activeGroup}` : section.label.toLowerCase();
-
-  resultsMeta.textContent = `${visibleEntries.length} ${scopeText} shown — ${tagText}`;
+  resultsElement.innerHTML = section.renderCard(selectedEntry);
 }
 
 function render() {
@@ -445,10 +395,8 @@ function render() {
   renderSectionNav(section);
   renderGroupNav(groups);
   renderItemNav(visibleEntries, groupedEntries);
-  renderPaneHeader(section, selectedEntry);
   renderTags(groupedEntries.length > 0 ? groupedEntries : section.entries);
-  renderMeta(section, visibleEntries);
-  renderResults(section, selectedEntry, visibleEntries);
+  renderResults(section, selectedEntry);
 }
 
 setActiveSection(state.activeSection);

@@ -191,9 +191,23 @@ h1 {
 
 .section-button,
 .group-button,
-.item-button,
-.related-link,
+.item-button {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text);
+  font: inherit;
+}
+
 .tag-chip {
+  width: auto;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text);
+  font: inherit;
+}
+
+.related-link {
   width: 100%;
   border: 1px solid var(--border);
   background: var(--surface-soft);
@@ -306,26 +320,56 @@ h1 {
   line-height: 1.05;
 }
 
-.toolbar {
-  display: grid;
-  gap: 1rem;
+.sidebar-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.search {
-  display: grid;
-  gap: 0.45rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.search input {
+#searchInput {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: rgba(8, 11, 18, 0.76);
   color: var(--text);
-  padding: 0.9rem 1rem;
+  padding: 0.65rem 0.85rem;
   font: inherit;
+  transition: border-color var(--transition);
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+
+.sidebar-filters .tag-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.sidebar-filters .tag-chip {
+  cursor: pointer;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: all var(--transition);
+}
+
+.sidebar-filters .tag-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.sidebar-filters .tag-chip.active {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .search input:focus,
