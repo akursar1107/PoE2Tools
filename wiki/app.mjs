@@ -60,6 +60,50 @@ searchInput.addEventListener('input', (event) => {
   render();
 });
 
+// Arrow key navigation for sidebar entries list + Escape to clear search
+window.addEventListener('keydown', (event) => {
+  // Only intercept arrow keys if we are not typing inside another text input (though searchInput is fine)
+  if (document.activeElement && document.activeElement.tagName === 'INPUT' && document.activeElement !== searchInput) {
+    return;
+  }
+
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    const { visibleEntries } = syncState();
+    if (visibleEntries.length === 0) return;
+
+    const currentIndex = visibleEntries.findIndex((entry) => entry.id === state.activeEntryId);
+    let nextIndex = currentIndex;
+
+    if (event.key === 'ArrowDown') {
+      nextIndex = currentIndex + 1;
+      if (nextIndex >= visibleEntries.length) nextIndex = 0; // Wrap around
+    } else {
+      nextIndex = currentIndex - 1;
+      if (nextIndex < 0) nextIndex = visibleEntries.length - 1; // Wrap around
+    }
+
+    const nextEntry = visibleEntries[nextIndex];
+    if (nextEntry) {
+      event.preventDefault(); // Stop window from scrolling
+      setActiveEntry(nextEntry.id);
+
+      // Smooth scroll the active list element into view inside sidebar
+      setTimeout(() => {
+        const activeBtn = itemNav.querySelector(`[data-entry-id="${nextEntry.id}"]`);
+        if (activeBtn) {
+          activeBtn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      }, 0);
+    }
+  } else if (event.key === 'Escape') {
+    state.query = '';
+    state.selectedTags = [];
+    searchInput.value = '';
+    searchInput.blur();
+    render();
+  }
+});
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll('&', '&amp;')

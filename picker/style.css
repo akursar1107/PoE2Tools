@@ -9,7 +9,7 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -24,8 +24,9 @@ header {
 
 h1 {
   font-size: clamp(1.6rem, 5vw, 2.4rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 400;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
   color: var(--accent);
 }
 
@@ -324,6 +325,13 @@ h2 {
   font-size: 0.9rem;
   color: var(--text-muted);
   gap: 0.5rem;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+#historyList li:hover {
+  background: var(--surface-alt);
+  border-color: var(--accent);
 }
 
 #historyList li .history-ascendancy {
@@ -335,6 +343,16 @@ h2 {
   color: var(--accent);
   text-align: right;
 }
+
+/* Class color-coding themes */
+[data-class="Warrior"] { color: #ff5a5a !important; }
+[data-class="Ranger"] { color: #6bfb6b !important; }
+[data-class="Witch"] { color: #d46bff !important; }
+[data-class="Sorceress"] { color: #5bc0de !important; }
+[data-class="Mercenary"] { color: #a9b5c5 !important; }
+[data-class="Monk"] { color: #ffeb3b !important; }
+[data-class="Druid"] { color: #ff9800 !important; }
+[data-class="Huntress"] { color: #1abc9c !important; }
 
 /* ── Utilities ── */
 .hidden {

@@ -31,7 +31,6 @@ muteBtn.addEventListener('click', () => {
   isMuted = !isMuted;
   localStorage.setItem('poe2_randomizer_muted', isMuted);
   updateMuteIcon();
-  // Resume context if needed
   if (!isMuted && !audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
@@ -66,6 +65,13 @@ function playTickSound() {
   }
 }
 
+// Ease out back physics curve (rebound at the end of scroll)
+function easeOutBack(t) {
+  const c1 = 1.25; // overshoot multiplier
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
 // Reel Class
 class Reel {
   constructor(viewportId, stripId, clickerId, items) {
@@ -85,7 +91,6 @@ class Reel {
 
   setup(targetItem) {
     this.sequence = [];
-    // Generate items. Fill with random selections, set sequence[stopIndex] to target
     for (let i = 0; i < this.stopIndex + 3; i++) {
       if (i === this.stopIndex) {
         this.sequence.push(targetItem);
@@ -94,12 +99,14 @@ class Reel {
       }
     }
 
-    // Render elements inside strip
     this.strip.innerHTML = '';
     this.sequence.forEach(item => {
       const div = document.createElement('div');
       div.className = 'spinner-item';
       div.textContent = item.name;
+      if (item.className) {
+        div.setAttribute('data-class', item.className);
+      }
       this.strip.appendChild(div);
     });
 
@@ -110,11 +117,16 @@ class Reel {
     this.viewport.classList.add('spinning');
   }
 
+  snapTo(targetItem) {
+    this.setup(targetItem);
+    this.updatePosition(this.targetY);
+    this.viewport.classList.remove('spinning');
+  }
+
   updatePosition(y) {
     this.y = y;
     this.strip.style.transform = `translateY(${-y}px)`;
 
-    // Calculate scale, opacity, and active class for items
     const children = this.strip.children;
     const centerOffset = y + this.viewportHeight / 2;
 
@@ -123,14 +135,12 @@ class Reel {
       const itemCenter = idx * this.itemHeight + this.itemHeight / 2;
       const dist = Math.abs(itemCenter - centerOffset);
 
-      // Fish-eye scaling and opacity fading
       const scale = Math.max(0.8, 1.25 - (dist / 140) * 0.45);
       const opacity = Math.max(0.3, 1.0 - (dist / 110) * 0.7);
 
       item.style.transform = `scale(${scale})`;
       item.style.opacity = opacity;
 
-      // Center active class (within 30px of center)
       if (dist < 30) {
         item.classList.add('active');
       } else {
@@ -138,7 +148,6 @@ class Reel {
       }
     }
 
-    // Trigger clicker needle tick
     const currentTickIndex = Math.floor((y + this.itemHeight / 2) / this.itemHeight);
     if (currentTickIndex !== this.lastTickIndex) {
       if (this.lastTickIndex !== -1) {
@@ -151,7 +160,6 @@ class Reel {
 
   triggerClickerAnimation() {
     this.clicker.classList.remove('tick-down', 'tick-up');
-    // Alternate direction of clicker bounce for variety
     const dirClass = Math.random() > 0.5 ? 'tick-down' : 'tick-up';
     this.clicker.classList.add(dirClass);
     setTimeout(() => {
@@ -168,8 +176,7 @@ class Reel {
       const elapsed = currentTime - startTime;
       const t = Math.min(elapsed / duration, 1);
 
-      // Ease out quartic
-      const progress = 1 - Math.pow(1 - t, 4);
+      const progress = easeOutBack(t);
       const currentY = progress * this.targetY;
 
       this.updatePosition(currentY);
@@ -201,7 +208,6 @@ function roll() {
   downloadBtn.classList.add('hidden');
   spinnerContainer.classList.remove('hidden');
 
-  // Clear sub-tags during spin
   classTag.textContent = '';
   classTag.style.opacity = 0;
   skillTags.innerHTML = '';
@@ -211,7 +217,6 @@ function roll() {
   const targetSkill = getRandom(skillGems);
   currentRoll = { ascendancy: targetAscendancy, skill: targetSkill };
 
-  // Setup reels with target
   ascendancyReel.setup(targetAscendancy);
   skillReel.setup(targetSkill);
 
@@ -219,12 +224,11 @@ function roll() {
   const onReelDone = () => {
     doneCount++;
     if (doneCount === 1) {
-      // Ascendancy finished first (shorter duration)
       classTag.textContent = targetAscendancy.className;
+      classTag.setAttribute('data-class', targetAscendancy.className);
       classTag.style.opacity = 1;
       classTag.style.transition = 'opacity 0.3s ease';
     } else if (doneCount === 2) {
-      // Both finished
       renderTags(targetSkill);
       skillTags.style.opacity = 1;
       skillTags.style.transition = 'opacity 0.3s ease';
@@ -237,9 +241,49 @@ function roll() {
     }
   };
 
-  // Spin with staggered durations: Ascendancy (2.0s), Skill Gem (2.8s)
   ascendancyReel.spin(2000, onReelDone);
   skillReel.spin(2800, onReelDone);
+}
+
+// Load a clicked historic build with a quick transition spin
+function loadHistoricBuild(entry) {
+  const ascendancy = ascendancies.find(a => a.name === entry.ascendancy);
+  const skill = skillGems.find(s => s.name === entry.skill);
+  if (!ascendancy || !skill) return;
+
+  currentRoll = { ascendancy, skill };
+
+  rollBtn.disabled = true;
+  rollBtn.textContent = 'Loading...';
+  downloadBtn.classList.add('hidden');
+
+  classTag.textContent = '';
+  classTag.style.opacity = 0;
+  skillTags.innerHTML = '';
+  skillTags.style.opacity = 0;
+
+  ascendancyReel.setup(ascendancy);
+  skillReel.setup(skill);
+
+  let doneCount = 0;
+  const onReelDone = () => {
+    doneCount++;
+    if (doneCount === 2) {
+      classTag.textContent = ascendancy.className;
+      classTag.setAttribute('data-class', ascendancy.className);
+      classTag.style.opacity = 1;
+
+      renderTags(skill);
+      skillTags.style.opacity = 1;
+
+      rollBtn.disabled = false;
+      rollBtn.textContent = 'Roll Build';
+      downloadBtn.classList.remove('hidden');
+    }
+  };
+
+  ascendancyReel.spin(600, onReelDone);
+  skillReel.spin(800, onReelDone);
 }
 
 // Sub tags rendering
@@ -275,9 +319,13 @@ function addToHistory(ascendancy, skill) {
 function renderHistoryItem(entry, prepend = false) {
   const li = document.createElement('li');
   li.innerHTML = `
-    <span class="history-ascendancy">${entry.className} &mdash; ${entry.ascendancy}</span>
+    <span class="history-ascendancy" data-class="${entry.className}">${entry.className} &mdash; ${entry.ascendancy}</span>
     <span class="history-skill">${entry.skill}</span>
   `;
+  li.addEventListener('click', () => {
+    if (rollBtn.disabled) return;
+    loadHistoricBuild(entry);
+  });
   if (prepend) {
     historyList.insertBefore(li, historyList.firstChild);
   } else {
@@ -285,7 +333,6 @@ function renderHistoryItem(entry, prepend = false) {
   }
 }
 
-// History Actions
 function clearHistory() {
   history = [];
   saveHistory();
@@ -309,9 +356,39 @@ function loadHistory() {
 }
 
 function restoreHistory() {
-  if (history.length === 0) return;
-  history.forEach(entry => renderHistoryItem(entry));
-  historySection.classList.remove('hidden');
+  spinnerContainer.classList.remove('hidden');
+
+  if (history.length > 0) {
+    history.forEach(entry => renderHistoryItem(entry));
+    historySection.classList.remove('hidden');
+
+    // Snap to the most recent history item on load
+    const lastRoll = history[0];
+    const ascendancy = ascendancies.find(a => a.name === lastRoll.ascendancy);
+    const skill = skillGems.find(s => s.name === lastRoll.skill);
+    if (ascendancy && skill) {
+      currentRoll = { ascendancy, skill };
+      ascendancyReel.snapTo(ascendancy);
+      skillReel.snapTo(skill);
+      classTag.textContent = ascendancy.className;
+      classTag.setAttribute('data-class', ascendancy.className);
+      classTag.style.opacity = 1;
+      renderTags(skill);
+      skillTags.style.opacity = 1;
+      downloadBtn.classList.remove('hidden');
+    }
+  } else {
+    // Snap to default placeholder on load (Titan + Fireball)
+    const defaultAsc = ascendancies[0];
+    const defaultSkill = skillGems[0];
+    ascendancyReel.snapTo(defaultAsc);
+    skillReel.snapTo(defaultSkill);
+    classTag.textContent = defaultAsc.className;
+    classTag.setAttribute('data-class', defaultAsc.className);
+    classTag.style.opacity = 1;
+    renderTags(defaultSkill);
+    skillTags.style.opacity = 1;
+  }
 }
 
 function downloadBuild() {
@@ -351,6 +428,16 @@ function downloadBuild() {
 rollBtn.addEventListener('click', roll);
 clearBtn.addEventListener('click', clearHistory);
 downloadBtn.addEventListener('click', downloadBuild);
+
+// Global hotkeys (Spacebar rolls)
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && !rollBtn.disabled) {
+    // Avoid double roll if button is activeElement and already triggers on click/space
+    if (document.activeElement === rollBtn) return;
+    e.preventDefault();
+    roll();
+  }
+});
 
 // Initialize
 restoreHistory();

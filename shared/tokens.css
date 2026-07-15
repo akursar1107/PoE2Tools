@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Outfit:wght@300;400;600;700&display=swap');
+
 /**
  * PoE2 Tools — Shared design tokens
  * All apps import this file to share the visual language.
@@ -36,6 +38,23 @@
   --shadow:     0 28px 60px rgba(0, 0, 0, 0.38);
 
   /* ── Typography ──────────────────────────────────────────── */
-  --font-body:    'Segoe UI', system-ui, sans-serif;
-  --font-display: Georgia, 'Times New Roman', serif;
+  --font-body:    'Outfit', sans-serif;
+  --font-display: 'Marcellus', serif;
+}
+
+/* ── Custom Scrollbars ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }

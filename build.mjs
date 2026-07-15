@@ -29,6 +29,18 @@ const NAV_HTML = `
     <li><a href="../relic-optimizer/">Relic Optimizer</a></li>
   </ul>
 </nav>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    document.querySelectorAll('.site-nav ul a').forEach(a => {
+      const href = a.getAttribute('href');
+      const segment = href.replace('../', '').replace('/', '');
+      if (segment && path.includes('/' + segment)) {
+        a.classList.add('active');
+      }
+    });
+  });
+</script>
 `.trim();
 
 // Nav CSS — inlined so it works without an extra request
@@ -47,6 +59,7 @@ const NAV_CSS = `
   top: 0;
   z-index: 100;
   flex-wrap: wrap;
+  font-family: 'Outfit', sans-serif;
 }
 .site-nav .nav-brand {
   font-weight: 700;
@@ -55,6 +68,7 @@ const NAV_CSS = `
   text-decoration: none;
   letter-spacing: 0.03em;
   white-space: nowrap;
+  font-family: 'Marcellus', serif;
 }
 .site-nav ul {
   list-style: none;
@@ -69,8 +83,15 @@ const NAV_CSS = `
   text-decoration: none;
   font-size: 0.875rem;
   transition: color 0.2s;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
 }
 .site-nav a:hover { color: #f2eee6; }
+.site-nav a.active {
+  color: #c89b3c;
+  font-weight: 600;
+  border-bottom-color: #c89b3c;
+}
 </style>
 `.trim();
 
