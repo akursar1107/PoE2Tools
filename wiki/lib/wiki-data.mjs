@@ -24,16 +24,38 @@ export function getSupportCriteria(support) {
   return support.matchAll ?? support.worksWith ?? [];
 }
 
-function supportMatchesSkill(skill, support) {
-  const skillTags = new Set((skill.tags ?? []).map(normalizeText));
-  const matchAll = (support.matchAll ?? []).map(normalizeText);
-  const worksWith = getSupportCriteria(support).map(normalizeText);
+const GROUP_TAGS = new Set([
+  'bow', 'crossbow', 'spear', 'quarterstaff', 'mace', 'flail',
+  'sword', 'axe', 'dagger', 'claw', 'wand', 'sceptre', 'staff', 'shield',
+  'elemental', 'occult', 'primal'
+]);
 
-  if (matchAll.length > 0) {
-    return matchAll.every((tag) => skillTags.has(tag));
+const BROAD_TAGS = new Set(['damage', 'utility', 'speed', 'sustain']);
+
+export function supportMatchesSkill(skill, support) {
+  const skillTags = new Set((skill.tags ?? []).map(normalizeText));
+
+  if (support.matchAll) {
+    return support.matchAll.map(normalizeText).every((tag) => skillTags.has(tag));
   }
 
-  return worksWith.some((tag) => skillTags.has(tag));
+  const supportTags = (support.tags ?? support.worksWith ?? []).map(normalizeText);
+  if (supportTags.length === 0) return false;
+
+  const groupRestrictions = supportTags.filter(t => GROUP_TAGS.has(t));
+  const typeRestrictions = supportTags.filter(t => !GROUP_TAGS.has(t) && !BROAD_TAGS.has(t));
+
+  if (groupRestrictions.length > 0) {
+    const matchesGroup = groupRestrictions.some(tag => skillTags.has(tag));
+    if (!matchesGroup) return false;
+  }
+
+  if (typeRestrictions.length > 0) {
+    const matchesType = typeRestrictions.some(tag => skillTags.has(tag));
+    if (!matchesType) return false;
+  }
+
+  return true;
 }
 
 export function groupEntries(entries, field) {

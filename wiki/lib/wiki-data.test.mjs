@@ -12,6 +12,7 @@ import {
   getSupportCriteria,
   getSupportsForSkill,
   groupEntries,
+  supportMatchesSkill,
 } from './wiki-data.mjs';
 
 test('filterEntries matches query across name, summary, and tags', () => {
@@ -294,4 +295,27 @@ test('getSupportCriteria prefers matchAll criteria when present', () => {
   };
 
   assert.deepEqual(getSupportCriteria(support), ['projectile', 'bow']);
+});
+
+test('supportMatchesSkill correctly restricts elemental penetration gems', () => {
+  const coldPenetration = {
+    id: 'cold-penetration',
+    name: 'Cold Penetration',
+    tags: ['cold', 'elemental'],
+  };
+
+  const frostBomb = {
+    id: 'frost-bomb',
+    name: 'Frost Bomb',
+    tags: ['spell', 'area', 'cold', 'duration', 'elemental'],
+  };
+
+  const fireball = {
+    id: 'fireball',
+    name: 'Fireball',
+    tags: ['spell', 'area', 'projectile', 'fire', 'elemental'],
+  };
+
+  assert.ok(supportMatchesSkill(frostBomb, coldPenetration), 'Cold Penetration should support Frost Bomb');
+  assert.ok(!supportMatchesSkill(fireball, coldPenetration), 'Cold Penetration should not support Fireball');
 });
