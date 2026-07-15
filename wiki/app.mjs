@@ -12,10 +12,10 @@ import {
 
 const sections = [
   {
-    id: 'ascendancies',
-    label: 'Ascendancies',
+    id: 'classes',
+    label: 'Classes',
     entries: ascendancies,
-    emptyMessage: 'No ascendancies match the current search.',
+    emptyMessage: 'No classes match the current search.',
     renderCard: renderAscendancyCard,
   },
   {
@@ -35,7 +35,7 @@ const sections = [
 ];
 
 const state = {
-  activeSection: 'ascendancies',
+  activeSection: 'classes',
   activeGroup: null,
   activeEntryId: null,
   query: '',

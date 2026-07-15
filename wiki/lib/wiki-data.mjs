@@ -15,7 +15,7 @@ function flattenEntryParts(value) {
 }
 
 const sidebarGroupFields = {
-  ascendancies: 'className',
+  classes: 'className',
   skills: 'kind',
   supports: 'category',
 };

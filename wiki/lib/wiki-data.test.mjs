@@ -85,7 +85,7 @@ test('groupEntries groups support gems by category', () => {
 });
 
 test('buildSidebarGroups returns class-based groups for ascendancies', () => {
-  const groups = buildSidebarGroups('ascendancies', ascendancies);
+  const groups = buildSidebarGroups('classes', ascendancies);
 
   assert.ok(groups.Witch);
   assert.deepEqual(
