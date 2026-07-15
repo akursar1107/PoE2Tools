@@ -68,31 +68,147 @@ main {
   transform: scale(0.97);
 }
 
-/* ── Result Cards ── */
-.result {
+/* ── Mute Button ── */
+.mute-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
+  transition: transform 0.2s;
+  user-select: none;
+}
+
+.mute-btn:hover {
+  transform: scale(1.1);
+}
+
+.mute-btn:active {
+  transform: scale(0.9);
+}
+
+/* ── Spinner Viewport & Reels ── */
+.spinner-container {
   width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-.result-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.2rem 1.4rem;
+.spinner-column {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  animation: fadeSlideIn 0.3s ease;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0; /* Prevents overflow */
 }
 
-.label {
+.column-label {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
+}
+
+.spinner-viewport {
+  width: 100%;
+  height: 180px; /* Exact height for 3 visible items (60px each) */
+  background: #0d0f15;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 10px 20px rgba(0,0,0,0.5), inset 0 -10px 20px rgba(0,0,0,0.5);
+}
+
+.spinner-viewport.spinning {
+  border-color: var(--border-strong);
+}
+
+.spinner-strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.spinner-item {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 0 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+
+.spinner-item.active {
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(200, 155, 60, 0.4);
+}
+
+.spinner-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, 
+    var(--bg) 0%, 
+    rgba(9, 11, 17, 0.4) 20%, 
+    transparent 45%, 
+    transparent 55%, 
+    rgba(9, 11, 17, 0.4) 80%, 
+    var(--bg) 100%
+  );
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+}
+
+/* Horizontal center indicators */
+.spinner-viewport::before,
+.spinner-viewport::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 1px;
+  background: rgba(200, 155, 60, 0.15);
+  pointer-events: none;
+}
+.spinner-viewport::before { top: 60px; }
+.spinner-viewport::after { top: 120px; }
+
+/* ── Clicker Needle ── */
+.clicker-indicator {
+  position: absolute;
+  right: 12px;
+  top: calc(50% - 6px);
+  width: 0;
+  height: 0;
+  border-right: 14px solid var(--accent);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  transform-origin: right center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.clicker-indicator.tick-down {
+  transform: rotate(20deg);
+}
+
+.clicker-indicator.tick-up {
+  transform: rotate(-20deg);
 }
 
 .class-tag {
@@ -105,12 +221,7 @@ main {
   padding: 0.15rem 0.55rem;
   color: var(--accent);
   width: fit-content;
-}
-
-.value {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text);
+  margin-top: 0.25rem;
 }
 
 /* ── Download Button ── */
@@ -241,12 +352,13 @@ h2 {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   body {
     padding: 1.5rem 0.75rem 3rem;
   }
 
-  .value {
-    font-size: 1.2rem;
+  .spinner-container {
+    flex-direction: column;
+    gap: 1.25rem;
   }
 }
