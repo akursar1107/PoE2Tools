@@ -39,6 +39,15 @@ function screenToWorld(sx, sy) {
   };
 }
 
+// ── HTML escaping (tree data is third-party, fetched at runtime) ───────────
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+}
+
 // ── Stat text cleanup ─────────────────────────────────────────────────────────
 function formatStat(stat) {
   return stat
@@ -81,6 +90,7 @@ async function loadData() {
 
   if (!raw) {
     const res = await fetch(DATA_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status} fetching tree data`);
     raw = await res.json();
     try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(raw)); } catch (_) {}
   }
@@ -215,7 +225,7 @@ function findNodeAt(sx, sy) {
 // ── Tooltip ───────────────────────────────────────────────────────────────────
 function showTooltip(node, clientX, clientY) {
   const lines = node.stats.slice(0, 4);
-  tooltip.innerHTML = `<strong>${node.name || 'Unnamed node'}</strong>${lines.map(s => `<p>${s}</p>`).join('')}`;
+  tooltip.innerHTML = `<strong>${escapeHtml(node.name || 'Unnamed node')}</strong>${lines.map(s => `<p>${escapeHtml(s)}</p>`).join('')}`;
   tooltip.classList.remove('hidden');
   positionTooltip(clientX, clientY);
 }
@@ -391,7 +401,7 @@ function doSearch(query) {
   searchResults.innerHTML = matches.length
     ? matches.map(n => {
         const type = nodeType(n);
-        return `<li data-id="${n.id}">${n.name || 'Unnamed'}<span class="result-type">${type}</span></li>`;
+        return `<li data-id="${escapeHtml(n.id)}">${escapeHtml(n.name || 'Unnamed')}<span class="result-type">${type}</span></li>`;
       }).join('')
     : '<li style="color:var(--text-muted);pointer-events:none">No results</li>';
   searchResults.classList.remove('hidden');

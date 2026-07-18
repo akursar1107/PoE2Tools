@@ -318,10 +318,17 @@ function addToHistory(ascendancy, skill) {
 
 function renderHistoryItem(entry, prepend = false) {
   const li = document.createElement('li');
-  li.innerHTML = `
-    <span class="history-ascendancy" data-class="${entry.className}">${entry.className} &mdash; ${entry.ascendancy}</span>
-    <span class="history-skill">${entry.skill}</span>
-  `;
+
+  const ascSpan = document.createElement('span');
+  ascSpan.className = 'history-ascendancy';
+  ascSpan.setAttribute('data-class', entry.className);
+  ascSpan.textContent = `${entry.className} — ${entry.ascendancy}`;
+
+  const skillSpan = document.createElement('span');
+  skillSpan.className = 'history-skill';
+  skillSpan.textContent = entry.skill;
+
+  li.append(ascSpan, skillSpan);
   li.addEventListener('click', () => {
     if (rollBtn.disabled) return;
     loadHistoricBuild(entry);
