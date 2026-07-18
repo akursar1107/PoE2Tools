@@ -7,6 +7,7 @@ that gets built and assembled into the site by the repo-root `build.mjs`.
 ## Features
 
 - Drag-and-drop 5×4 relic altar with blocked corners and collision detection
+- 90° rotation of placed relics (right-click), including rotation-aware optimizer
 - Auto-optimizer: greedy placement maximizing a chosen stat
 - Paste-from-game import (hover a relic in PoE2, Ctrl+C, paste)
 - Real modifier pools for all size tiers + all 6 Zarokh challenge uniques

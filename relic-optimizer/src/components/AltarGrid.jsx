@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core'
 import useStore from '../store/useStore'
-import { COLS, ROWS } from '../utils/altarLogic'
+import { COLS, ROWS, effectiveDims } from '../utils/altarLogic'
 
 function GridCell({ col, row, isBlocked, highlight }) {
   const { setNodeRef, isOver } = useDroppable({ id: `cell-${col}-${row}`, disabled: isBlocked })
@@ -26,7 +26,7 @@ function GridCell({ col, row, isBlocked, highlight }) {
 }
 
 export default function AltarGrid({ activeRelic, overCell }) {
-  const { altar, inventory, blockedCells, removeFromAltar, clearAltar } = useStore()
+  const { altar, inventory, blockedCells, removeFromAltar, rotateRelic, clearAltar } = useStore()
 
   function isBlocked(col, row) {
     return blockedCells.some(b => b.col === col && b.row === row)
@@ -61,20 +61,25 @@ export default function AltarGrid({ activeRelic, overCell }) {
           ))
         )}
 
-        {altar.map(({ relicId, col, row }) => {
+        {altar.map(({ relicId, col, row, rotated }) => {
           const relic = inventory.find(r => r.id === relicId)
           if (!relic) return null
+          const dims = effectiveDims(relic, rotated)
+          const rotatable = relic.width !== relic.height
           return (
             <div
               key={relicId}
               onDoubleClick={() => removeFromAltar(relicId)}
-              title={`${relic.name} — double-click to remove`}
+              onContextMenu={e => { e.preventDefault(); rotateRelic(relicId) }}
+              title={rotatable
+                ? `${relic.name} — right-click to rotate, double-click to remove`
+                : `${relic.name} — double-click to remove`}
               style={{
                 position: 'absolute',
                 left: `calc(${col} * (var(--cell-size) + 4px))`,
                 top: `calc(${row} * (var(--cell-size) + 4px))`,
-                width: `calc(${relic.width} * var(--cell-size) + ${(relic.width - 1) * 4}px)`,
-                height: `calc(${relic.height} * var(--cell-size) + ${(relic.height - 1) * 4}px)`,
+                width: `calc(${dims.width} * var(--cell-size) + ${(dims.width - 1) * 4}px)`,
+                height: `calc(${dims.height} * var(--cell-size) + ${(dims.height - 1) * 4}px)`,
                 background: relic.isUnique ? 'rgba(200,155,60,0.2)' : 'rgba(74,144,226,0.15)',
                 border: `2px solid ${relic.isUnique ? 'var(--accent)' : '#4a90e2'}`,
                 borderRadius: 6,
@@ -93,6 +98,11 @@ export default function AltarGrid({ activeRelic, overCell }) {
               }}
             >
               {relic.name}
+              {rotatable && (
+                <span style={{ position: 'absolute', right: 4, bottom: 2, fontSize: '0.65rem', opacity: 0.6 }}>
+                  ↻
+                </span>
+              )}
             </div>
           )
         })}

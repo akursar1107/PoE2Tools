@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { canPlace, optimizePlacements, COLS, ROWS } from './altarLogic.js'
+import { canPlace, optimizePlacements, tryRotate, effectiveDims, COLS, ROWS } from './altarLogic.js'
 
 const BLOCKED = [{ col: 0, row: 3 }, { col: 4, row: 0 }]
 
@@ -115,4 +115,83 @@ test('optimizePlacements does not mutate the input altar', () => {
 
   optimizePlacements('max_honor', inv, altar, BLOCKED)
   assert.equal(JSON.stringify(altar), before)
+})
+
+// ── Rotation ──────────────────────────────────────────────────────────────────
+
+test('effectiveDims swaps width/height only when rotated', () => {
+  const relic = { width: 2, height: 1 }
+  assert.deepEqual(effectiveDims(relic, false), { width: 2, height: 1 })
+  assert.deepEqual(effectiveDims(relic, true), { width: 1, height: 2 })
+})
+
+test('canPlace honours candidate rotation', () => {
+  const inv = [coffer('big'), seal('s')]
+  const altar = [{ relicId: 'big', col: 0, row: 0 }] // covers cols 0-1, rows 0-1
+
+  // Unrotated 2x1 at (4,1) sticks out of the grid; rotated 1x2 fits
+  assert.equal(canPlace(seal('s'), 4, 1, altar, inv, BLOCKED, null, false), false)
+  assert.equal(canPlace(seal('s'), 4, 1, altar, inv, BLOCKED, null, true), true)
+})
+
+test('canPlace honours the rotated footprint of placed relics', () => {
+  const inv = [seal('a'), seal('b')]
+  // 'a' placed rotated at (4,1): covers (4,1) and (4,2), not (5,1)
+  const rotatedAltar = [{ relicId: 'a', col: 4, row: 1, rotated: true }]
+  assert.equal(canPlace(seal('b'), 3, 2, rotatedAltar, inv, BLOCKED), false) // clips (4,2)
+
+  const flatAltar = [{ relicId: 'a', col: 4, row: 1 }] // covers (4,1),(5,1)
+  assert.equal(canPlace(seal('b'), 3, 2, flatAltar, inv, BLOCKED), true)
+})
+
+test('tryRotate rotates a placed relic when the new footprint fits', () => {
+  const inv = [seal('s')]
+  const altar = [{ relicId: 's', col: 0, row: 0 }]
+  const result = tryRotate('s', altar, inv, BLOCKED)
+  assert.deepEqual(result, [{ relicId: 's', col: 0, row: 0, rotated: true }])
+})
+
+test('tryRotate is a no-op when the rotated footprint would collide', () => {
+  const inv = [seal('a'), seal('b')]
+  // 'a' at (3,1) flat covers (3,1),(4,1); rotating would cover (3,1),(3,2)
+  // but 'b' already covers (3,2),(4,2)
+  const altar = [
+    { relicId: 'a', col: 3, row: 1 },
+    { relicId: 'b', col: 3, row: 2 },
+  ]
+  assert.equal(tryRotate('a', altar, inv, BLOCKED), altar) // same reference = no change
+})
+
+test('tryRotate is a no-op for square relics and unknown ids', () => {
+  const inv = [coffer('c')]
+  const altar = [{ relicId: 'c', col: 0, row: 0 }]
+  assert.equal(tryRotate('c', altar, inv, BLOCKED), altar)
+  assert.equal(tryRotate('ghost', altar, inv, BLOCKED), altar)
+})
+
+test('tryRotate toggles back to the original orientation', () => {
+  const inv = [seal('s')]
+  const once = tryRotate('s', [{ relicId: 's', col: 0, row: 0 }], inv, BLOCKED)
+  const twice = tryRotate('s', once, inv, BLOCKED)
+  assert.deepEqual(twice, [{ relicId: 's', col: 0, row: 0, rotated: false }])
+})
+
+test('optimizePlacements rotates a relic when only that orientation fits', () => {
+  const mod = [{ stat: 'honor_resistance', value: 10 }]
+  const inv = [
+    coffer('c1'), coffer('c2'),
+    seal('s1'), seal('s2'), seal('s3'),
+    seal('target', mod),
+  ]
+  // Fill the grid so the only free cells are the vertical strip (4,1)-(4,3)
+  // plus the isolated cell (1,3) — a flat 2x1 fits nowhere.
+  const altar = [
+    { relicId: 'c1', col: 0, row: 0 }, { relicId: 'c2', col: 2, row: 0 },
+    { relicId: 's1', col: 0, row: 2 }, { relicId: 's2', col: 2, row: 2 },
+    { relicId: 's3', col: 2, row: 3 },
+  ]
+  const { altar: result, placed } = optimizePlacements('honor_resistance', inv, altar, BLOCKED)
+
+  assert.equal(placed, 1)
+  assert.deepEqual(result[result.length - 1], { relicId: 'target', col: 4, row: 1, rotated: true })
 })

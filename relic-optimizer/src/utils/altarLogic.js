@@ -4,15 +4,27 @@ export const COLS = 5
 export const ROWS = 4
 
 /**
+ * Effective footprint of a relic, accounting for 90° rotation.
+ * Placements carry an optional `rotated` flag; inventory relics don't.
+ */
+export function effectiveDims(relic, rotated = false) {
+  return rotated
+    ? { width: relic.height, height: relic.width }
+    : { width: relic.width, height: relic.height }
+}
+
+/**
  * Check whether `relic` can be placed at (col, row) on the altar.
  * Fails if any covered cell is out of bounds, blocked, or already covered
  * by another placed relic. `currentRelicId` ignores the relic being moved
- * so it can be re-placed over its own current cells.
+ * so it can be re-placed over its own current cells. `rotated` applies a
+ * 90° rotation to the candidate; existing placements honour their own flags.
  */
-export function canPlace(relic, col, row, altar, inventory, blockedCells, currentRelicId = null) {
+export function canPlace(relic, col, row, altar, inventory, blockedCells, currentRelicId = null, rotated = false) {
+  const { width, height } = effectiveDims(relic, rotated)
   const cells = []
-  for (let c = col; c < col + relic.width; c++) {
-    for (let r = row; r < row + relic.height; r++) {
+  for (let c = col; c < col + width; c++) {
+    for (let r = row; r < row + height; r++) {
       cells.push({ col: c, row: r })
     }
   }
@@ -24,13 +36,31 @@ export function canPlace(relic, col, row, altar, inventory, blockedCells, curren
   for (const placed of otherPlacements) {
     const placedRelic = inventory.find(r => r.id === placed.relicId)
     if (!placedRelic) continue
-    for (let c = placed.col; c < placed.col + placedRelic.width; c++) {
-      for (let r = placed.row; r < placed.row + placedRelic.height; r++) {
+    const dims = effectiveDims(placedRelic, placed.rotated)
+    for (let c = placed.col; c < placed.col + dims.width; c++) {
+      for (let r = placed.row; r < placed.row + dims.height; r++) {
         if (cells.some(cell => cell.col === c && cell.row === r)) return false
       }
     }
   }
   return true
+}
+
+/**
+ * Toggle a placed relic's rotation in place. Pure — returns a NEW altar
+ * array, or the same array unchanged when rotation isn't possible
+ * (unknown relic, square relic, or rotated footprint wouldn't fit).
+ */
+export function tryRotate(relicId, altar, inventory, blockedCells) {
+  const placement = altar.find(p => p.relicId === relicId)
+  const relic = inventory.find(r => r.id === relicId)
+  if (!placement || !relic || relic.width === relic.height) return altar
+
+  const rotated = !placement.rotated
+  if (!canPlace(relic, placement.col, placement.row, altar, inventory, blockedCells, relicId, rotated)) {
+    return altar
+  }
+  return altar.map(p => (p.relicId === relicId ? { ...p, rotated } : p))
 }
 
 /**
@@ -59,10 +89,14 @@ export function optimizePlacements(statKey, inventory, altar, blockedCells) {
     let found = false
     for (let row = 0; row < ROWS && !found; row++) {
       for (let col = 0; col < COLS && !found; col++) {
-        if (canPlace(relic, col, row, newAltar, inventory, blockedCells)) {
-          newAltar.push({ relicId: relic.id, col, row })
-          placed++
-          found = true
+        // Prefer the natural orientation; rotate only if it doesn't fit
+        for (const rotated of [false, true]) {
+          if (canPlace(relic, col, row, newAltar, inventory, blockedCells, null, rotated)) {
+            newAltar.push({ relicId: relic.id, col, row, ...(rotated && { rotated: true }) })
+            placed++
+            found = true
+            break
+          }
         }
       }
     }

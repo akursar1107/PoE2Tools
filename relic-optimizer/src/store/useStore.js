@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { canPlace, optimizePlacements } from '../utils/altarLogic'
+import { canPlace, optimizePlacements, tryRotate } from '../utils/altarLogic'
 
 // Re-exported so components can import placement logic from the store.
 export { canPlace }
@@ -28,6 +28,9 @@ const useStore = create(persist(
 
     removeFromAltar: (relicId) =>
       set(s => ({ altar: s.altar.filter(p => p.relicId !== relicId) })),
+
+    rotateRelic: (relicId) =>
+      set(s => ({ altar: tryRotate(relicId, s.altar, s.inventory, s.blockedCells) })),
 
     clearAltar: () => set({ altar: [] }),
 
