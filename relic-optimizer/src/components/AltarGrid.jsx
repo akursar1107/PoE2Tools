@@ -1,8 +1,6 @@
 import { useDroppable } from '@dnd-kit/core'
 import useStore from '../store/useStore'
-
-const COLS = 5
-const ROWS = 4
+import { COLS, ROWS } from '../utils/altarLogic'
 
 function GridCell({ col, row, isBlocked, highlight }) {
   const { setNodeRef, isOver } = useDroppable({ id: `cell-${col}-${row}`, disabled: isBlocked })

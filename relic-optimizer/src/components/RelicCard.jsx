@@ -56,7 +56,7 @@ export default function RelicCard({ relic }) {
       ) : (
         <div style={{ marginTop: '0.4rem', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
           {relic.mods.map((m, i) => (
-            <div key={i}>+{m.value}{m.unit} {m.label}</div>
+            <div key={i}>{m.unknown ? m.label : `+${m.value}${m.unit} ${m.label}`}</div>
           ))}
         </div>
       )}

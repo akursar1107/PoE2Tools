@@ -16,7 +16,7 @@ export default function Header() {
         </p>
       </div>
       <a
-        href="/PoE2Tools/"
+        href="../"
         style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textDecoration: 'none' }}
       >
         ← All Tools
