@@ -155,7 +155,6 @@ function build() {
     copyHtml(join(src, 'index.html'), join(dest, 'index.html'));
     copyFile(join(src, 'style.css'), join(dest, 'style.css'));
     copyFile(join(src, 'app.mjs'), join(dest, 'app.mjs'));
-    // Legacy files no longer needed — omit data.js and app.js
   }
 
   // ── wiki ────────────────────────────────────────────────────────────────────

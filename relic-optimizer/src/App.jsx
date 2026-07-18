@@ -31,7 +31,7 @@ export default function App() {
     setOverCell({ col, row, valid })
   }
 
-  function handleDragEnd({ active, over }) {
+  function handleDragEnd({ over }) {
     setActiveRelic(null)
     setOverCell(null)
     if (!over || !activeRelic) return

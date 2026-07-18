@@ -24,6 +24,10 @@ jobs:
         with:
           node-version: 24
 
+      # No dependencies needed — tests cover root + relic-optimizer pure logic
+      - name: Run tests
+        run: npm test
+
       - name: Build relic-optimizer
         working-directory: relic-optimizer
         run: |

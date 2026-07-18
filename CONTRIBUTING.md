@@ -52,27 +52,57 @@ node wiki/lib/wiki-data.test.mjs
 
 ---
 
-## Local development
+## Updating relic data
 
-The project is a static site — no framework, no server required.
+Relic data lives in `relic-optimizer/src/data/relics.json` and is **manually maintained** from:
+
+- [poe2wiki.net relic modifier lists](https://www.poe2wiki.net/wiki/Relic) — small / medium / large modifier pages
+- [poe2db.tw Relics](https://poe2db.tw/us/Relics) — unique relics and their effects
+
+The file has three sections:
+
+| Section | Contents |
+|---|---|
+| `baseTiers` | The 7 relic base types (dimensions + size tier) |
+| `uniqueRelics` | The 6 Zarokh challenge uniques — all are destroyed on use |
+| `modifierPool` | Magic relic modifiers per size tier (`small` / `medium` / `large`) |
+
+Modifier entries use overall range across all in-game tiers: `{ id, label, text, stat, unit, min, max }`.
+The `stat` key is what the stats panel and optimizer aggregate by.
+
+**Important:** if you add or rename a modifier, also update the keyword patterns in
+`relic-optimizer/src/utils/parseRelicText.js` (`MOD_KEYWORDS`) so paste-from-game import
+recognises it — and the stat lists in `StatsPanel.jsx` / `OptimizePanel.jsx` if it's a new `stat`.
+Then run the tests:
 
 ```bash
-# Build the site (outputs to _site/)
-node build.mjs
+npm test
+```
+
+---
+
+## Local development
+
+The picker, wiki, and tree apps are plain HTML/JS — no build step. The relic
+optimizer uses Vite, and `build.mjs` assembles everything into `_site/`:
+
+```bash
+# Full build: relic optimizer (Vite) + site assembly
+npm run build
 
 # Serve _site/ locally (any static server works)
 npx serve _site
 ```
 
-The relic optimizer uses Vite:
+For hot-reload development on the relic optimizer:
 
 ```bash
 cd relic-optimizer
 npm install
-npm run dev
+npm run dev        # or: npm run dev (from the repo root)
 ```
 
 ## Deployment
 
 Pushing to `main` triggers the GitHub Actions workflow (`.github/workflows/deploy.yml`), which
-builds the relic optimizer, runs `node build.mjs`, and deploys to GitHub Pages automatically.
+runs `npm test`, builds the relic optimizer, runs `node build.mjs`, and deploys to GitHub Pages automatically.

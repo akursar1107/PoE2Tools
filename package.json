@@ -1,0 +1,14 @@
+{
+  "name": "poe2-tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A collection of Path of Exile 2 web tools hosted on GitHub Pages.",
+  "scripts": {
+    "build": "npm --prefix relic-optimizer run build && node build.mjs",
+    "build:site": "node build.mjs",
+    "dev": "npm --prefix relic-optimizer run dev",
+    "test": "node --test wiki/lib/wiki-data.test.mjs \"relic-optimizer/src/**/*.test.js\" && node tools/validate-wiki-data.mjs",
+    "validate:data": "node tools/validate-wiki-data.mjs"
+  }
+}
