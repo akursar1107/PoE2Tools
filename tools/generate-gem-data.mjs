@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Generates wiki/data/skills.mjs, wiki/data/supports.mjs, and updates
- * the skillGems array in picker/data.js from the repoe-fork/poe2 data.
+ * Generates data/skills.mjs and data/supports.mjs from the
+ * repoe-fork/poe2 skill gem dataset.
  *
  * Usage: node tools/generate-gem-data.mjs
  */

@@ -1,16 +1,32 @@
-# React + Vite
+# Relic Altar Optimizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Plan and optimize your **Trial of the Sekhemas** relic altar layout for Path of Exile 2.
+Part of the [PoE2 Tools](../README.md) collection — this directory is a React + Vite app
+that gets built and assembled into the site by the repo-root `build.mjs`.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Drag-and-drop 5×4 relic altar with blocked corners and collision detection
+- Auto-optimizer: greedy placement maximizing a chosen stat
+- Paste-from-game import (hover a relic in PoE2, Ctrl+C, paste)
+- Real modifier pools for all size tiers + all 6 Zarokh challenge uniques
+- Inventory and altar persist in `localStorage`
 
-## React Compiler
+## Development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+npm run dev      # hot-reload dev server
+npm run build    # production build to dist/
+npm run lint
+```
 
-## Expanding the ESLint configuration
+From the repo root, `npm run build` builds this app and assembles `_site/`;
+`npm test` runs the logic/data tests (`src/utils/*.test.js`, `src/data/*.test.js`).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Data
+
+`src/data/relics.json` is hand-maintained from poe2wiki.net and poe2db.tw —
+see [CONTRIBUTING.md](../CONTRIBUTING.md#updating-relic-data) for the update
+procedure, including the required parser-keyword sync in
+`src/utils/parseRelicText.js`.
