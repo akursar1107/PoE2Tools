@@ -2,14 +2,17 @@ import { useState } from 'react'
 import useStore from '../store/useStore'
 
 const STATS = [
-  { key: 'max_honor',           label: 'Maximum Honour' },
-  { key: 'honor_resistance',    label: 'Honour Resistance' },
-  { key: 'honor_regen',         label: 'Honour Regeneration' },
-  { key: 'boon_effect',         label: 'Boon Effect' },
-  { key: 'affliction_reduction',label: 'Affliction Reduction' },
-  { key: 'currency_quantity',   label: 'Currency Quantity' },
-  { key: 'unique_rarity',       label: 'Unique Item Rarity' },
-  { key: 'boss_damage',         label: 'Boss Damage' },
+  { key: 'max_honor',               label: 'Maximum Honour' },
+  { key: 'honor_resistance',        label: 'Honour Resistance' },
+  { key: 'honor_restored',          label: 'Honour Restored' },
+  { key: 'honor_on_boss_kill',      label: 'Honour on Boss Kill' },
+  { key: 'monsters_reduced_damage', label: 'Monster Damage Reduction' },
+  { key: 'monster_damage_taken',    label: 'Monster Damage Taken' },
+  { key: 'boss_damage_taken',       label: 'Boss Damage Taken' },
+  { key: 'relic_quantity',          label: 'Relic Quantity' },
+  { key: 'key_quantity',            label: 'Key Quantity' },
+  { key: 'avoid_affliction',        label: 'Avoid Affliction Chance' },
+  { key: 'rooms_revealed',          label: 'Rooms Revealed' },
 ]
 
 export default function OptimizePanel() {

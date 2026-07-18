@@ -1,17 +1,43 @@
 import useStore from '../store/useStore'
 
 const STAT_LABELS = {
-  honor_resistance:   { label: 'Honour Resistance', unit: '%',  category: 'Survival' },
-  max_honor:          { label: 'Maximum Honour',     unit: '',   category: 'Survival' },
-  honor_regen:        { label: 'Honour Regen',       unit: '/s', category: 'Survival' },
-  boon_effect:        { label: 'Boon Effect',         unit: '%',  category: 'Trial' },
-  affliction_reduction:{ label: 'Affliction Reduction', unit: '%', category: 'Trial' },
-  currency_quantity:  { label: 'Currency Quantity',  unit: '%',  category: 'Rewards' },
-  unique_rarity:      { label: 'Unique Item Rarity', unit: '%',  category: 'Rewards' },
-  boss_damage:        { label: 'Boss Damage',         unit: '%',  category: 'Rewards' },
+  // Survival
+  max_honor:               { label: 'Maximum Honour', unit: '%', category: 'Survival' },
+  honor_resistance:        { label: 'Honour Resistance', unit: '%', category: 'Survival' },
+  max_honor_resistance:    { label: 'Maximum Honour Resistance', unit: '%', category: 'Survival' },
+  honor_restored:          { label: 'Honour Restored', unit: '%', category: 'Survival' },
+  honor_on_boss_kill:      { label: 'Honour on Boss Kill', unit: '', category: 'Survival' },
+  honor_on_shrine:         { label: 'Honour on Shrine', unit: '', category: 'Survival' },
+  honor_on_key:            { label: 'Honour on Key Pickup', unit: '', category: 'Survival' },
+  honor_on_room_complete:  { label: 'Honour per Room', unit: '', category: 'Survival' },
+  defences:                { label: 'Defences', unit: '%', category: 'Survival' },
+  monsters_reduced_damage: { label: 'Monster Damage Reduction', unit: '%', category: 'Survival' },
+  monster_reduced_speed:   { label: 'Monster Speed Reduction', unit: '%', category: 'Survival' },
+  slow_resistance:         { label: 'Slow Resistance', unit: '%', category: 'Survival' },
+  crit_damage_reduction:   { label: 'Crit Damage Taken Reduction', unit: '%', category: 'Survival' },
+  honor_death_cheat:       { label: 'Cheat Death Chance', unit: '%', category: 'Survival' },
+  // Combat
+  monster_damage_taken:    { label: 'Monster Damage Taken', unit: '%', category: 'Combat' },
+  rare_damage_taken:       { label: 'Rare Monster Damage Taken', unit: '%', category: 'Combat' },
+  boss_damage_taken:       { label: 'Boss Damage Taken', unit: '%', category: 'Combat' },
+  // Trial
+  avoid_affliction:        { label: 'Avoid Affliction Chance', unit: '%', category: 'Trial' },
+  rooms_revealed:          { label: 'Rooms Revealed', unit: '', category: 'Trial' },
+  merchant_prices:         { label: 'Merchant Price Reduction', unit: '%', category: 'Trial' },
+  merchant_extra_choice:   { label: 'Extra Merchant Choice', unit: '', category: 'Trial' },
+  dodge_roll_distance:     { label: 'Dodge Roll Distance', unit: 'm', category: 'Trial' },
+  starting_sacred_water:   { label: 'Starting Sacred Water', unit: '', category: 'Trial' },
+  // Rewards
+  relic_quantity:          { label: 'Relic Quantity', unit: '%', category: 'Rewards' },
+  key_quantity:            { label: 'Key Quantity', unit: '%', category: 'Rewards' },
+  key_upgrade_chance:      { label: 'Key Upgrade Chance', unit: '%', category: 'Rewards' },
+  extra_key_chance:        { label: 'Extra Key Chance', unit: '%', category: 'Rewards' },
+  double_sacred_water_monsters:  { label: 'Double Sacred Water (Monsters)', unit: '%', category: 'Rewards' },
+  double_sacred_water_fountains: { label: 'Double Sacred Water (Fountains)', unit: '%', category: 'Rewards' },
+  sacred_water_on_room:    { label: 'Sacred Water per Room', unit: '', category: 'Rewards' },
 }
 
-const CATEGORIES = ['Survival', 'Trial', 'Rewards']
+const CATEGORIES = ['Survival', 'Combat', 'Trial', 'Rewards']
 
 const headerStyle = {
   fontSize: '0.7rem', fontWeight: 600,
@@ -41,7 +67,10 @@ export default function StatsPanel() {
     const def = STAT_LABELS[stat]
     if (!def) continue
     if (!byCategory[def.category]) byCategory[def.category] = []
-    byCategory[def.category].push({ label: def.label, value, unit: def.unit })
+    // Round to 2 decimals — fractional stats (e.g. Dodge Roll distance)
+    // otherwise display floating point noise like 0.7000000000000001
+    const rounded = Math.round(value * 100) / 100
+    byCategory[def.category].push({ label: def.label, value: rounded, unit: def.unit })
   }
 
   return (

@@ -1,16 +1,41 @@
-import relicsData from '../data/relics.json'
+import relicsData from '../data/relics.json' with { type: 'json' }
 
-// Keywords to match in-game mod text → our mod id
-// Keys are currency-type drops (keys, gold, etc.)
-const MOD_KEYWORDS = [
-  { id: 'honor_resistance', patterns: ['honour resistance', 'honor resistance'] },
-  { id: 'max_honor',        patterns: ['maximum honour', 'maximum honor'] },
-  { id: 'honor_regen',      patterns: ['honour regeneration', 'honor regeneration'] },
-  { id: 'boon_effect',      patterns: ['boon effect'] },
-  { id: 'affliction_reduction', patterns: ['affliction effect', 'affliction'] },
-  { id: 'currency_quantity', patterns: ['currency quantity', 'quantity of keys', 'quantity of gold', 'quantity of currency'] },
-  { id: 'unique_rarity',    patterns: ['unique item rarity'] },
-  { id: 'boss_damage',      patterns: ['damage against bosses', 'boss damage'] },
+// Keywords to match in-game mod text → our mod id.
+// Order matters: more specific patterns must come before broader ones they
+// contain (e.g. 'maximum honour resistance' before 'honour resistance',
+// 'rare monsters take' before 'monsters take').
+// Exported for the data-sync test — every pool mod needs a keyword and vice versa.
+export const MOD_KEYWORDS = [
+  { id: 'max_honor_resistance', patterns: ['maximum honour resistance', 'maximum honor resistance'] },
+  { id: 'honor_resistance',     patterns: ['to honour resistance', 'to honor resistance'] },
+  { id: 'max_honor',            patterns: ['increased maximum honour', 'increased maximum honor'] },
+  { id: 'defences',             patterns: ['increased defences', 'increased defenses'] },
+  { id: 'starting_sacred_water', patterns: ['sacred water at the start'] },
+  { id: 'honor_restored',       patterns: ['increased honour restored', 'increased honor restored'] },
+  { id: 'relic_quantity',       patterns: ['quantity of relics'] },
+  { id: 'double_sacred_water_monsters', patterns: ['to drop double sacred water'] },
+  { id: 'double_sacred_water_fountains', patterns: ['to grant double sacred water'] },
+  { id: 'slow_resistance',      patterns: ['slowing potency'] },
+  { id: 'crit_damage_reduction', patterns: ['critical damage bonus'] },
+  { id: 'key_quantity',         patterns: ['quantity of keys'] },
+  { id: 'dodge_roll_distance',  patterns: ['dodge roll distance'] },
+  { id: 'rare_damage_taken',    patterns: ['rare monsters take'] },
+  { id: 'boss_damage_taken',    patterns: ['bosses take'] },
+  { id: 'monster_damage_taken', patterns: ['monsters take'] },
+  { id: 'monsters_reduced_damage', patterns: ['monsters deal'] },
+  { id: 'monster_reduced_speed', patterns: ['reduced attack, cast and movement speed'] },
+  { id: 'merchant_extra_choice', patterns: ['merchant has an additional choice'] },
+  { id: 'merchant_prices',      patterns: ['merchant prices'] },
+  { id: 'honor_on_boss_kill',   patterns: ['honour on killing a boss', 'honor on killing a boss'] },
+  { id: 'honor_on_shrine',      patterns: ['maraketh shrine'] },
+  { id: 'honor_on_key',         patterns: ['honour on picking up a key', 'honor on picking up a key'] },
+  { id: 'honor_on_room_complete', patterns: ['honour on room completion', 'honor on room completion'] },
+  { id: 'rooms_revealed',       patterns: ['room is revealed', 'rooms are revealed'] },
+  { id: 'avoid_affliction',     patterns: ['avoid gaining an affliction'] },
+  { id: 'key_upgrade_chance',   patterns: ['keys to upgrade'] },
+  { id: 'extra_key_chance',     patterns: ['gain a key'] },
+  { id: 'honor_death_cheat',    patterns: ['lose all your honour', 'lose all your honor'] },
+  { id: 'sacred_water_on_room', patterns: ['sacred water when you complete'] },
 ]
 
 function matchMod(line) {

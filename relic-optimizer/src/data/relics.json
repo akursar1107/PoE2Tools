@@ -19,7 +19,8 @@
         "Zarokh, the Temporal drops Temporalis",
         "Maximum Honour is 1",
         "Damage taken cannot be Absorbed",
-        "Cannot be used with Trials below level 80"
+        "Cannot be used with Trials below level 80",
+        "This item is destroyed when applied to a Trial"
       ],
       "destroyedOnUse": true
     },
@@ -31,9 +32,10 @@
       "height": 3,
       "effects": [
         "Zarokh, the Temporal drops an additional Barya",
-        "Your Defences are zero"
+        "Your Defences are zero",
+        "This item is destroyed when applied to a Trial"
       ],
-      "destroyedOnUse": false
+      "destroyedOnUse": true
     },
     {
       "id": "desperate_alliance",
@@ -43,10 +45,11 @@
       "height": 4,
       "effects": [
         "Zarokh, the Temporal drops Against the Darkness",
-        "Bosses deal 100% increased Damage",
-        "Bosses take 75% less Damage"
+        "Zarokh, the Temporal deals 100% more Damage",
+        "Zarokh, the Temporal takes 75% less Damage",
+        "This item is destroyed when applied to a Trial"
       ],
-      "destroyedOnUse": false
+      "destroyedOnUse": true
     },
     {
       "id": "changing_seasons",
@@ -56,9 +59,10 @@
       "height": 1,
       "effects": [
         "Zarokh, the Temporal drops Sandstorm Visage",
-        "Cannot restore Honour"
+        "Cannot restore Honour",
+        "This item is destroyed when applied to a Trial"
       ],
-      "destroyedOnUse": false
+      "destroyedOnUse": true
     },
     {
       "id": "burden_of_leadership",
@@ -68,38 +72,65 @@
       "height": 1,
       "effects": [
         "Zarokh, the Temporal drops Sekhema's Resolve",
-        "Rooms are unknown on the map"
+        "Rooms are unknown on the Trial Map",
+        "This item is destroyed when applied to a Trial"
       ],
-      "destroyedOnUse": false
+      "destroyedOnUse": true
+    },
+    {
+      "id": "remembered_tales",
+      "name": "The Remembered Tales",
+      "baseId": "coffer",
+      "width": 2,
+      "height": 2,
+      "effects": [
+        "Zarokh, the Temporal drops Blessed Bonds",
+        "Cannot have Boons",
+        "This item is destroyed when applied to a Trial"
+      ],
+      "destroyedOnUse": true
     }
   ],
   "modifierPool": {
     "small": [
-      { "id": "honor_resistance", "label": "Honour Resistance", "text": "+(10-15)% to Honour Resistance", "stat": "honor_resistance", "unit": "%", "min": 10, "max": 15 },
-      { "id": "max_honor", "label": "Maximum Honour", "text": "+(5-10) to Maximum Honour", "stat": "max_honor", "unit": "", "min": 5, "max": 10 },
-      { "id": "honor_regen", "label": "Honour Regen", "text": "+(1-2) Honour Regeneration per Second", "stat": "honor_regen", "unit": "/s", "min": 1, "max": 2 },
-      { "id": "boon_effect", "label": "Boon Effect", "text": "+(5-10)% increased Boon Effect", "stat": "boon_effect", "unit": "%", "min": 5, "max": 10 },
-      { "id": "affliction_reduction", "label": "Affliction Reduction", "text": "-(5-10)% reduced Affliction Effect", "stat": "affliction_reduction", "unit": "%", "min": 5, "max": 10 },
-      { "id": "currency_quantity", "label": "Currency Quantity", "text": "+(5-10)% increased Currency Quantity", "stat": "currency_quantity", "unit": "%", "min": 5, "max": 10 }
+      { "id": "max_honor", "label": "Maximum Honour", "text": "(9-30)% increased maximum Honour", "stat": "max_honor", "unit": "%", "min": 9, "max": 30 },
+      { "id": "defences", "label": "Defences", "text": "(20-70)% increased Defences", "stat": "defences", "unit": "%", "min": 20, "max": 70 },
+      { "id": "starting_sacred_water", "label": "Starting Sacred Water", "text": "Gain (30-59) Sacred Water at the start of the Trial", "stat": "starting_sacred_water", "unit": "", "min": 30, "max": 59 },
+      { "id": "honor_restored", "label": "Honour Restored", "text": "(6-29)% increased Honour restored", "stat": "honor_restored", "unit": "%", "min": 6, "max": 29 },
+      { "id": "honor_resistance", "label": "Honour Resistance", "text": "+(8-22)% to Honour Resistance", "stat": "honor_resistance", "unit": "%", "min": 8, "max": 22 },
+      { "id": "relic_quantity", "label": "Relic Quantity", "text": "(6-20)% increased quantity of Relics dropped by Monsters", "stat": "relic_quantity", "unit": "%", "min": 6, "max": 20 },
+      { "id": "double_sacred_water_monsters", "label": "Double Sacred Water (Monsters)", "text": "Monsters have (5-15)% chance to drop double Sacred Water", "stat": "double_sacred_water_monsters", "unit": "%", "min": 5, "max": 15 },
+      { "id": "slow_resistance", "label": "Slow Resistance", "text": "(8-20)% reduced Slowing Potency of Debuffs on You", "stat": "slow_resistance", "unit": "%", "min": 8, "max": 20 },
+      { "id": "crit_damage_reduction", "label": "Crit Damage Taken Reduction", "text": "Hits against you have (12-25)% reduced Critical Damage Bonus", "stat": "crit_damage_reduction", "unit": "%", "min": 12, "max": 25 },
+      { "id": "key_quantity", "label": "Key Quantity", "text": "(6-25)% increased quantity of Keys dropped by Monsters", "stat": "key_quantity", "unit": "%", "min": 6, "max": 25 },
+      { "id": "dodge_roll_distance", "label": "Dodge Roll Distance", "text": "+(0.3-0.7) metres to Dodge Roll distance", "stat": "dodge_roll_distance", "unit": "m", "min": 0.3, "max": 0.7 },
+      { "id": "double_sacred_water_fountains", "label": "Double Sacred Water (Fountains)", "text": "Fountains have (5-15)% chance to grant double Sacred Water", "stat": "double_sacred_water_fountains", "unit": "%", "min": 5, "max": 15 }
     ],
     "medium": [
-      { "id": "honor_resistance", "label": "Honour Resistance", "text": "+(15-25)% to Honour Resistance", "stat": "honor_resistance", "unit": "%", "min": 15, "max": 25 },
-      { "id": "max_honor", "label": "Maximum Honour", "text": "+(10-20) to Maximum Honour", "stat": "max_honor", "unit": "", "min": 10, "max": 20 },
-      { "id": "honor_regen", "label": "Honour Regen", "text": "+(2-4) Honour Regeneration per Second", "stat": "honor_regen", "unit": "/s", "min": 2, "max": 4 },
-      { "id": "boon_effect", "label": "Boon Effect", "text": "+(10-20)% increased Boon Effect", "stat": "boon_effect", "unit": "%", "min": 10, "max": 20 },
-      { "id": "affliction_reduction", "label": "Affliction Reduction", "text": "-(10-20)% reduced Affliction Effect", "stat": "affliction_reduction", "unit": "%", "min": 10, "max": 20 },
-      { "id": "currency_quantity", "label": "Currency Quantity", "text": "+(10-20)% increased Currency Quantity", "stat": "currency_quantity", "unit": "%", "min": 10, "max": 20 },
-      { "id": "unique_rarity", "label": "Unique Item Rarity", "text": "+(10-20)% increased Unique Item Rarity", "stat": "unique_rarity", "unit": "%", "min": 10, "max": 20 }
+      { "id": "rare_damage_taken", "label": "Rare Monster Damage Taken", "text": "Rare Monsters take (11-30)% increased Damage", "stat": "rare_damage_taken", "unit": "%", "min": 11, "max": 30 },
+      { "id": "max_honor", "label": "Maximum Honour", "text": "(17-45)% increased maximum Honour", "stat": "max_honor", "unit": "%", "min": 17, "max": 45 },
+      { "id": "honor_restored", "label": "Honour Restored", "text": "(16-45)% increased Honour restored", "stat": "honor_restored", "unit": "%", "min": 16, "max": 45 },
+      { "id": "boss_damage_taken", "label": "Boss Damage Taken", "text": "Bosses take (11-30)% increased Damage", "stat": "boss_damage_taken", "unit": "%", "min": 11, "max": 30 },
+      { "id": "merchant_extra_choice", "label": "Extra Merchant Choice", "text": "The Merchant has an additional Choice", "stat": "merchant_extra_choice", "unit": "", "min": 1, "max": 1 },
+      { "id": "honor_resistance", "label": "Honour Resistance", "text": "+(15-40)% to Honour Resistance", "stat": "honor_resistance", "unit": "%", "min": 15, "max": 40 },
+      { "id": "honor_on_boss_kill", "label": "Honour on Boss Kill", "text": "Restore (40-150) Honour on killing a Boss", "stat": "honor_on_boss_kill", "unit": "", "min": 40, "max": 150 },
+      { "id": "honor_on_shrine", "label": "Honour on Shrine", "text": "Restore (25-75) Honour on venerating a Maraketh Shrine", "stat": "honor_on_shrine", "unit": "", "min": 25, "max": 75 },
+      { "id": "merchant_prices", "label": "Merchant Price Reduction", "text": "(6-10)% reduced Merchant Prices", "stat": "merchant_prices", "unit": "%", "min": 6, "max": 10 },
+      { "id": "rooms_revealed", "label": "Rooms Revealed", "text": "(1-2) additional Rooms are revealed on the Trial Map", "stat": "rooms_revealed", "unit": "", "min": 1, "max": 2 }
     ],
     "large": [
-      { "id": "honor_resistance", "label": "Honour Resistance", "text": "+(20-35)% to Honour Resistance", "stat": "honor_resistance", "unit": "%", "min": 20, "max": 35 },
-      { "id": "max_honor", "label": "Maximum Honour", "text": "+(20-40) to Maximum Honour", "stat": "max_honor", "unit": "", "min": 20, "max": 40 },
-      { "id": "honor_regen", "label": "Honour Regen", "text": "+(4-8) Honour Regeneration per Second", "stat": "honor_regen", "unit": "/s", "min": 4, "max": 8 },
-      { "id": "boon_effect", "label": "Boon Effect", "text": "+(20-35)% increased Boon Effect", "stat": "boon_effect", "unit": "%", "min": 20, "max": 35 },
-      { "id": "affliction_reduction", "label": "Affliction Reduction", "text": "-(20-35)% reduced Affliction Effect", "stat": "affliction_reduction", "unit": "%", "min": 20, "max": 35 },
-      { "id": "currency_quantity", "label": "Currency Quantity", "text": "+(20-35)% increased Currency Quantity", "stat": "currency_quantity", "unit": "%", "min": 20, "max": 35 },
-      { "id": "unique_rarity", "label": "Unique Item Rarity", "text": "+(20-35)% increased Unique Item Rarity", "stat": "unique_rarity", "unit": "%", "min": 20, "max": 35 },
-      { "id": "boss_damage", "label": "Boss Damage", "text": "+(20-40)% increased Damage against Bosses", "stat": "boss_damage", "unit": "%", "min": 20, "max": 40 }
+      { "id": "monsters_reduced_damage", "label": "Monster Damage Reduction", "text": "Monsters deal (6-12)% reduced Damage", "stat": "monsters_reduced_damage", "unit": "%", "min": 6, "max": 12 },
+      { "id": "honor_death_cheat", "label": "Cheat Death Chance", "text": "(5-12)% chance if you were to lose all your Honour to have 1 Honour instead", "stat": "honor_death_cheat", "unit": "%", "min": 5, "max": 12 },
+      { "id": "monster_damage_taken", "label": "Monster Damage Taken", "text": "Monsters take (11-30)% increased Damage", "stat": "monster_damage_taken", "unit": "%", "min": 11, "max": 30 },
+      { "id": "monster_reduced_speed", "label": "Monster Speed Reduction", "text": "Monsters have (4-7)% reduced Attack, Cast and Movement Speed", "stat": "monster_reduced_speed", "unit": "%", "min": 4, "max": 7 },
+      { "id": "key_upgrade_chance", "label": "Key Upgrade Chance", "text": "(3-9)% chance for each of your Keys to upgrade on completing a Floor", "stat": "key_upgrade_chance", "unit": "%", "min": 3, "max": 9 },
+      { "id": "extra_key_chance", "label": "Extra Key Chance", "text": "When you gain a Key (7-16)% chance to gain another", "stat": "extra_key_chance", "unit": "%", "min": 7, "max": 16 },
+      { "id": "avoid_affliction", "label": "Avoid Affliction Chance", "text": "(6-15)% chance to Avoid gaining an Affliction", "stat": "avoid_affliction", "unit": "%", "min": 6, "max": 15 },
+      { "id": "honor_on_key", "label": "Honour on Key Pickup", "text": "Restore (25-75) Honour on picking up a Key", "stat": "honor_on_key", "unit": "", "min": 25, "max": 75 },
+      { "id": "max_honor_resistance", "label": "Maximum Honour Resistance", "text": "+(2-5)% to Maximum Honour Resistance", "stat": "max_honor_resistance", "unit": "%", "min": 2, "max": 5 },
+      { "id": "honor_on_room_complete", "label": "Honour per Room", "text": "Restore (10-30) Honour on room completion", "stat": "honor_on_room_complete", "unit": "", "min": 10, "max": 30 },
+      { "id": "rooms_revealed", "label": "Rooms Revealed", "text": "(2-4) additional Rooms are revealed on the Trial Map", "stat": "rooms_revealed", "unit": "", "min": 2, "max": 4 },
+      { "id": "sacred_water_on_room", "label": "Sacred Water per Room", "text": "Gain (11-30) Sacred Water when you complete a Room", "stat": "sacred_water_on_room", "unit": "", "min": 11, "max": 30 }
     ]
   }
 }
